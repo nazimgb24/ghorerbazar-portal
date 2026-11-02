@@ -15,35 +15,31 @@
     <div id="app" class="flex-grow flex flex-col"></div>
 
     <script>
-        let savedUsers = JSON.parse(localStorage.getItem('gb_users'));
+        // Clean v2 storage keys to completely avoid old conflicts
+        let savedUsers = JSON.parse(localStorage.getItem('gb_portal_users_v2'));
         if (!savedUsers || !Array.isArray(savedUsers) || savedUsers.length === 0) {
             savedUsers = [
                 { id: 1, name: 'Admin User', username: 'admin', password: 'admin123', role: 'admin', team: 'Management', active: true }
             ];
-        } else {
-            if (!savedUsers.some(u => u.username === 'admin')) {
-                savedUsers.unshift({ id: 1, name: 'Admin User', username: 'admin', password: 'admin123', role: 'admin', team: 'Management', active: true });
-            }
-            savedUsers.forEach(u => { if (u.active === undefined) u.active = true; });
         }
 
         const State = {
-            currentUser: JSON.parse(localStorage.getItem('gb_current_user')) || null,
+            currentUser: JSON.parse(localStorage.getItem('gb_portal_current_user_v2')) || null,
             users: savedUsers,
-            attendance: JSON.parse(localStorage.getItem('gb_attendance')) || [],
-            reports: JSON.parse(localStorage.getItem('gb_reports')) || [],
-            targets: JSON.parse(localStorage.getItem('gb_targets')) || {},
+            attendance: JSON.parse(localStorage.getItem('gb_portal_attendance_v2')) || [],
+            reports: JSON.parse(localStorage.getItem('gb_portal_reports_v2')) || [],
+            targets: JSON.parse(localStorage.getItem('gb_portal_targets_v2')) || {},
             adminTab: 'overview',
             adminViewMode: 'month',
             agentTab: 'overview'
         };
 
         function saveState() {
-            localStorage.setItem('gb_current_user', JSON.stringify(State.currentUser));
-            localStorage.setItem('gb_users', JSON.stringify(State.users));
-            localStorage.setItem('gb_attendance', JSON.stringify(State.attendance));
-            localStorage.setItem('gb_reports', JSON.stringify(State.reports));
-            localStorage.setItem('gb_targets', JSON.stringify(State.targets));
+            localStorage.setItem('gb_portal_current_user_v2', JSON.stringify(State.currentUser));
+            localStorage.setItem('gb_portal_users_v2', JSON.stringify(State.users));
+            localStorage.setItem('gb_portal_attendance_v2', JSON.stringify(State.attendance));
+            localStorage.setItem('gb_portal_reports_v2', JSON.stringify(State.reports));
+            localStorage.setItem('gb_portal_targets_v2', JSON.stringify(State.targets));
         }
 
         function render() {
