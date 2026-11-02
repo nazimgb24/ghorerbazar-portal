@@ -15,50 +15,52 @@
     <div id="app" class="flex-grow flex flex-col"></div>
 
     <script>
-        let savedUsers = JSON.parse(localStorage.getItem('gb_portal_users_v6'));
+        let savedUsers = JSON.parse(localStorage.getItem('gb_portal_users_v9'));
         if (!savedUsers || !Array.isArray(savedUsers) || savedUsers.length === 0) {
             savedUsers = [
                 { id: 1, name: 'Md. Nazimur Rahman', username: '10122', password: 'admin123', role: 'admin', team: 'Team Nazim', active: true },
                 { id: 2, name: 'Md Abdus Samad', username: '10107', password: 'admin123', role: 'admin', team: 'Team Abdus Samad', active: true },
                 { id: 3, name: 'Admin Master', username: 'admin', password: 'admin123', role: 'admin', team: 'Management', active: true },
+                { id: 4, name: 'Supervisor View', username: 'supervisor', password: 'super123', role: 'supervisor', team: 'Management', active: true },
                 
-                { id: 4, name: 'Habibur Rahman Shuvo', username: '10098', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
-                { id: 5, name: 'Al-Amin Kazi', username: '10136', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
-                { id: 6, name: 'Zubayer Al Mahmud', username: '11007', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
-                { id: 7, name: 'Md. Mehedi Amin', username: '11101', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
-                { id: 8, name: 'Abu Sayed', username: '11120', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
-                { id: 9, name: 'Rabbir Hossain Molla', username: '11130', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
-                { id: 10, name: 'Abdullah Al Soad', username: '10806', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
-                { id: 11, name: 'Al-Amin', username: '10128', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                { id: 5, name: 'Habibur Rahman Shuvo', username: '10098', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                { id: 6, name: 'Al-Amin Kazi', username: '10136', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                { id: 7, name: 'Zubayer Al Mahmud', username: '11007', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                { id: 8, name: 'Md. Mehedi Amin', username: '11101', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                { id: 9, name: 'Abu Sayed', username: '11120', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                { id: 10, name: 'Rabbir Hossain Molla', username: '11130', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                { id: 11, name: 'Abdullah Al Soad', username: '10806', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                { id: 12, name: 'Al-Amin', username: '10128', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
                 
-                { id: 12, name: 'Shagor Ahmed', username: '10191', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
-                { id: 13, name: 'Abdullah Dipu', username: '10289', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
-                { id: 14, name: 'Hasibul Islam Eraz', username: '11044', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
-                { id: 15, name: 'Kamruzzaman Shujon', username: '10741', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
-                { id: 16, name: 'Md. Abdullah Mahmud', username: '10803', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
-                { id: 17, name: 'Md. Ashiqur Rahman', username: '11042', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
-                { id: 18, name: 'Sheikh MD Rayhan', username: '10328', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
-                { id: 19, name: 'Ranju Ahmed', username: '10135', password: '12345678', role: 'agent', team: 'Team Nazim', active: true }
+                { id: 13, name: 'Shagor Ahmed', username: '10191', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                { id: 14, name: 'Abdullah Dipu', username: '10289', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                { id: 15, name: 'Hasibul Islam Eraz', username: '11044', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                { id: 16, name: 'Kamruzzaman Shujon', username: '10741', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                { id: 17, name: 'Md. Abdullah Mahmud', username: '10803', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                { id: 18, name: 'Md. Ashiqur Rahman', username: '11042', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                { id: 19, name: 'Sheikh MD Rayhan', username: '10328', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                { id: 20, name: 'Ranju Ahmed', username: '10135', password: '12345678', role: 'agent', team: 'Team Nazim', active: true }
             ];
         }
 
         const State = {
-            currentUser: JSON.parse(localStorage.getItem('gb_portal_current_user_v6')) || null,
+            currentUser: JSON.parse(localStorage.getItem('gb_portal_current_user_v9')) || null,
             users: savedUsers,
-            attendance: JSON.parse(localStorage.getItem('gb_portal_attendance_v6')) || [],
-            reports: JSON.parse(localStorage.getItem('gb_portal_reports_v6')) || [],
-            targets: JSON.parse(localStorage.getItem('gb_portal_targets_v6')) || {},
+            attendance: JSON.parse(localStorage.getItem('gb_portal_attendance_v9')) || [],
+            reports: JSON.parse(localStorage.getItem('gb_portal_reports_v9')) || [],
+            targets: JSON.parse(localStorage.getItem('gb_portal_targets_v9')) || {},
             adminTab: 'overview',
             adminViewMode: 'month',
+            selectedAgentDetails: null,
             agentTab: 'overview'
         };
 
         function saveState() {
-            localStorage.setItem('gb_portal_current_user_v6', JSON.stringify(State.currentUser));
-            localStorage.setItem('gb_portal_users_v6', JSON.stringify(State.users));
-            localStorage.setItem('gb_portal_attendance_v6', JSON.stringify(State.attendance));
-            localStorage.setItem('gb_portal_reports_v6', JSON.stringify(State.reports));
-            localStorage.setItem('gb_portal_targets_v6', JSON.stringify(State.targets));
+            localStorage.setItem('gb_portal_current_user_v9', JSON.stringify(State.currentUser));
+            localStorage.setItem('gb_portal_users_v9', JSON.stringify(State.users));
+            localStorage.setItem('gb_portal_attendance_v9', JSON.stringify(State.attendance));
+            localStorage.setItem('gb_portal_reports_v9', JSON.stringify(State.reports));
+            localStorage.setItem('gb_portal_targets_v9', JSON.stringify(State.targets));
         }
 
         function render() {
@@ -69,7 +71,10 @@
                 app.innerHTML = renderLogin();
                 attachLoginEvents();
             } else if (State.currentUser.role === 'admin') {
-                app.innerHTML = renderAdminDashboard();
+                app.innerHTML = renderAdminDashboard(false);
+                attachAdminEvents();
+            } else if (State.currentUser.role === 'supervisor') {
+                app.innerHTML = renderAdminDashboard(true);
                 attachAdminEvents();
             } else {
                 app.innerHTML = renderAgentDashboard();
@@ -148,7 +153,7 @@
             });
         }
 
-        function renderAdminDashboard() {
+        function renderAdminDashboard(isSupervisor = false) {
             const activeAttendance = State.attendance.filter(a => !a.logoutTime);
             const agents = State.users.filter(u => u.role === 'agent' && u.active !== false);
             const allAgents = State.users.filter(u => u.role === 'agent');
@@ -186,19 +191,108 @@
             });
             const teamComparison = Object.values(teamsMap).sort((a, b) => b.totalSales - a.totalSales);
 
+            let agentDetailViewHTML = '';
+            if (State.selectedAgentDetails) {
+                const selAgent = State.users.find(u => u.username === State.selectedAgentDetails);
+                const selReports = State.reports.filter(r => r.username === State.selectedAgentDetails);
+                const selTarget = State.targets[State.selectedAgentDetails] || 50000;
+                const dailyTarget = Math.round(selTarget / 26);
+                const totalSelSales = selReports.reduce((sum, r) => sum + (r.amount || 0), 0);
+                const totalSelLeads = selReports.reduce((sum, r) => sum + (r.leads || 0), 0);
+                const totalSelOrders = selReports.reduce((sum, r) => sum + (r.orders || 0), 0);
+                const selConversion = totalSelLeads > 0 ? ((totalSelOrders / totalSelLeads) * 100).toFixed(1) : 0;
+                const selRatio = selTarget > 0 ? Math.min(Math.round((totalSelSales / selTarget) * 100), 100) : 0;
+
+                agentDetailViewHTML = `
+                    <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
+                        <div class="flex justify-between items-center border-b pb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-900">${selAgent ? selAgent.name : ''} (${State.selectedAgentDetails})</h3>
+                                <p class="text-xs text-slate-500 mt-1">Team: ${selAgent ? selAgent.team : ''} | Monthly Target: ৳${selTarget.toLocaleString()} | Daily Target (÷26): ৳${dailyTarget.toLocaleString()}</p>
+                            </div>
+                            <button onclick="closeAgentDetails()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-1.5 rounded-lg text-xs font-semibold transition">&larr; Back</button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <p class="text-xs uppercase text-slate-500 font-semibold">Total Sales</p>
+                                <h4 class="text-xl font-bold text-orange-600 mt-1">৳${totalSelSales.toLocaleString()} (${selRatio}%)</h4>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <p class="text-xs uppercase text-slate-500 font-semibold">Total Leads / Orders</p>
+                                <h4 class="text-xl font-bold text-slate-900 mt-1">${totalSelLeads} / ${totalSelOrders}</h4>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <p class="text-xs uppercase text-slate-500 font-semibold">Conversion Rate</p>
+                                <h4 class="text-xl font-bold text-blue-600 mt-1">${selConversion}%</h4>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <p class="text-xs uppercase text-slate-500 font-semibold">Reports Submitted</p>
+                                <h4 class="text-xl font-bold text-purple-600 mt-1">${selReports.length} Entries</h4>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-md font-bold text-slate-900 mb-3">Day-wise Performance Records</h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm text-slate-700">
+                                    <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
+                                        <tr>
+                                            <th class="p-3">Date</th>
+                                            <th class="p-3">Leads</th>
+                                            <th class="p-3">Orders</th>
+                                            <th class="p-3">Conversion</th>
+                                            <th class="p-3">Sales Amount (BDT)</th>
+                                            <th class="p-3">Daily Target Status</th>
+                                            ${!isSupervisor ? '<th class="p-3">Action</th>' : ''}
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-200">
+                                        ${selReports.length === 0 ? `<tr><td colspan="${isSupervisor ? 6 : 7}" class="p-4 text-center text-slate-400">No reports found.</td></tr>` :
+                                        selReports.map((r) => {
+                                            const rIndex = State.reports.indexOf(r);
+                                            const rConv = r.leads > 0 ? ((r.orders / r.leads) * 100).toFixed(1) : 0;
+                                            const rDayRatio = dailyTarget > 0 ? Math.round(((r.amount || 0) / dailyTarget) * 100) : 0;
+                                            return `
+                                                <tr>
+                                                    <td class="p-3 font-medium">${r.date}</td>
+                                                    <td class="p-3">${r.leads}</td>
+                                                    <td class="p-3">${r.orders}</td>
+                                                    <td class="p-3 text-blue-600 font-semibold">${rConv}%</td>
+                                                    <td class="p-3 text-orange-600 font-bold">৳${(r.amount || 0).toLocaleString()}</td>
+                                                    <td class="p-3"><span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-semibold">${rDayRatio}% of daily target</span></td>
+                                                    ${!isSupervisor ? `
+                                                        <td class="p-3 flex gap-2">
+                                                            <button onclick="editReportPrompt(${rIndex})" class="text-blue-600 hover:text-blue-800 text-xs font-semibold">Edit</button>
+                                                            <button onclick="deleteReport(${rIndex})" class="text-red-500 hover:text-red-700 text-xs font-semibold">Delete</button>
+                                                        </td>
+                                                    ` : ''}
+                                                </tr>
+                                            `;
+                                        }).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
             return `
                 <nav class="bg-slate-900 text-white px-6 py-3.5 flex justify-between items-center shadow">
                     <div class="flex items-center gap-3">
                         <div class="bg-orange-500 text-white px-3 py-1.5 rounded-lg font-bold text-sm tracking-wider">
                             GHORER BAZAR
                         </div>
-                        <span class="text-xs text-slate-400">Admin Control Center</span>
+                        <span class="text-xs text-slate-400">${isSupervisor ? 'Supervisor View Portal (Read-Only)' : 'Admin Control Center'}</span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <button onclick="exportData()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-lg text-xs font-semibold border border-slate-700 transition">📥 Backup</button>
-                        <label class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-lg text-xs font-semibold border border-slate-700 cursor-pointer transition">
-                            📤 Restore <input type="file" id="importFile" onchange="importData(event)" class="hidden" accept=".json">
-                        </label>
+                        ${!isSupervisor ? `
+                            <button onclick="exportData()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-lg text-xs font-semibold border border-slate-700 transition">📥 Backup</button>
+                            <label class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-lg text-xs font-semibold border border-slate-700 cursor-pointer transition">
+                                📤 Restore <input type="file" id="importFile" onchange="importData(event)" class="hidden" accept=".json">
+                            </label>
+                        ` : ''}
                         <button onclick="logout()" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold transition">Logout</button>
                     </div>
                 </nav>
@@ -207,7 +301,7 @@
                     <button onclick="setAdminTab('overview')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'overview' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📊 Sales Overview</button>
                     <button onclick="setAdminTab('agents')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'agents' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">👥 Agent Management</button>
                     <button onclick="setAdminTab('attendance')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'attendance' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">⏱️ Attendance & Breaks</button>
-                    <button onclick="setAdminTab('reports')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'reports' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📝 Manual Report Entry</button>
+                    ${!isSupervisor ? `<button onclick="setAdminTab('reports')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'reports' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📝 Manual Report Entry</button>` : ''}
                     <button onclick="setAdminTab('leaderboard')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'leaderboard' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">🏆 Leaderboard</button>
                 </div>
 
@@ -217,7 +311,7 @@
                         <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-md flex flex-col md:flex-row justify-between items-center gap-4">
                             <div>
                                 <h2 class="text-xl font-bold">Welcome, ${State.currentUser.name}!</h2>
-                                <p class="text-xs text-slate-400 mt-1">Real-time performance analytics.</p>
+                                <p class="text-xs text-slate-400 mt-1">${isSupervisor ? 'Viewing team performance metrics.' : 'Real-time performance analytics.'}</p>
                             </div>
                             <div class="flex items-center gap-2 bg-slate-800 p-1 rounded-xl border border-slate-700">
                                 <button onclick="setAdminViewMode('month')" class="px-4 py-1.5 text-xs font-semibold rounded-lg transition ${State.adminViewMode === 'month' ? 'bg-orange-500 text-white' : 'text-slate-300'}">Month-wise</button>
@@ -261,64 +355,67 @@
                     </div>
 
                     <div class="${State.adminTab === 'agents' ? '' : 'hidden'} space-y-6">
-                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                            <h3 class="text-lg font-bold text-slate-900 mb-4">Create New Agent Account</h3>
-                            <form id="createAgentForm" class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                                <input type="text" id="newName" placeholder="Agent Full Name" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
-                                <input type="text" id="newUsername" placeholder="Emp ID (e.g. 11044)" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
-                                <input type="text" id="newPassword" placeholder="Password (e.g. 12345678)" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
-                                <select id="newTeam" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
-                                    <option value="Team Nazim">Team Nazim</option>
-                                    <option value="Team Abdus Samad">Team Abdus Samad</option>
-                                </select>
-                                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition shadow-sm text-sm">Add Agent</button>
-                            </form>
-                        </div>
+                        ${State.selectedAgentDetails ? agentDetailViewHTML : `
+                            ${!isSupervisor ? `
+                                <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                                    <h3 class="text-lg font-bold text-slate-900 mb-4">Create New Agent Account</h3>
+                                    <form id="createAgentForm" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                                        <input type="text" id="newName" placeholder="Agent Full Name" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                        <input type="text" id="newUsername" placeholder="Emp ID (e.g. 11044)" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                        <input type="text" id="newPassword" placeholder="Password (e.g. 12345678)" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                        <select id="newTeam" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                            <option value="Team Nazim">Team Nazim</option>
+                                            <option value="Team Abdus Samad">Team Abdus Samad</option>
+                                        </select>
+                                        <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition shadow-sm text-sm">Add Agent</button>
+                                    </form>
+                                </div>
+                            ` : ''}
 
-                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                            <h3 class="text-lg font-bold text-slate-900 mb-4">Manage Agents, Status & Individual Targets (BDT)</h3>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-slate-700">
-                                    <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
-                                        <tr>
-                                            <th class="p-3">Name</th>
-                                            <th class="p-3">Emp ID</th>
-                                            <th class="p-3">Password</th>
-                                            <th class="p-3">Team</th>
-                                            <th class="p-3">Status (Active / Off)</th>
-                                            <th class="p-3">Target Amount (BDT)</th>
-                                            <th class="p-3">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-200">
-                                        ${allAgents.length === 0 ? `<tr><td colspan="7" class="p-4 text-center text-slate-400">No agents found.</td></tr>` : 
-                                        allAgents.map(u => `
+                            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                                <h3 class="text-lg font-bold text-slate-900 mb-4">Agent List & Performance Directory</h3>
+                                <p class="text-xs text-slate-500 mb-4">Click on an agent's name to view their complete day-wise records.</p>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left text-sm text-slate-700">
+                                        <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
                                             <tr>
-                                                <td class="p-3 font-medium text-slate-900">${u.name}</td>
-                                                <td class="p-3 text-slate-600 font-semibold">${u.username}</td>
-                                                <td class="p-3 text-slate-500">${u.password}</td>
-                                                <td class="p-3"><span class="bg-slate-100 text-slate-800 px-2 py-1 rounded text-xs font-semibold">${u.team}</span></td>
-                                                <td class="p-3">
-                                                    <button onclick="toggleAgentStatus(${u.id})" class="px-3 py-1 rounded-lg text-xs font-semibold transition ${u.active !== false ? 'bg-emerald-100 text-emerald-700 border border-emerald-300 hover:bg-emerald-200' : 'bg-red-100 text-red-700 border border-red-300 hover:bg-red-200'}">
-                                                        ${u.active !== false ? '🟢 Active' : '🔴 Inactive (Off)'}
-                                                    </button>
-                                                </td>
-                                                <td class="p-3">
-                                                    <div class="flex items-center gap-2">
-                                                        <input type="number" id="target_${u.username}" value="${State.targets[u.username] || 50000}" class="bg-slate-50 border border-slate-300 rounded px-2 py-1 w-28 text-slate-900 text-sm">
-                                                        <button onclick="updateAgentTarget('${u.username}')" class="bg-orange-500 hover:bg-orange-600 text-white px-2.5 py-1 rounded text-xs font-semibold">Set</button>
-                                                    </div>
-                                                </td>
-                                                <td class="p-3 flex gap-2">
-                                                    <button onclick="editUserPrompt(${u.id})" class="text-blue-600 hover:text-blue-800 text-xs font-semibold">Edit</button>
-                                                    <button onclick="deleteUser(${u.id})" class="text-red-500 hover:text-red-700 text-xs font-semibold">Delete</button>
-                                                </td>
+                                                <th class="p-3">Name</th>
+                                                <th class="p-3">Emp ID</th>
+                                                <th class="p-3">Team</th>
+                                                <th class="p-3">Status</th>
+                                                <th class="p-3">Monthly Target</th>
+                                                <th class="p-3">Daily Target (÷26)</th>
+                                                <th class="p-3">Action</th>
                                             </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-200">
+                                            ${allAgents.length === 0 ? `<tr><td colspan="7" class="p-4 text-center text-slate-400">No agents found.</td></tr>` : 
+                                            allAgents.map(u => {
+                                                const uTarget = State.targets[u.username] || 50000;
+                                                const uDaily = Math.round(uTarget / 26);
+                                                return `
+                                                    <tr>
+                                                        <td class="p-3 font-medium text-slate-900"><button onclick="viewAgentDetails('${u.username}')" class="text-orange-600 hover:underline font-bold">${u.name}</button></td>
+                                                        <td class="p-3 text-slate-600 font-semibold">${u.username}</td>
+                                                        <td class="p-3"><span class="bg-slate-100 text-slate-800 px-2 py-1 rounded text-xs font-semibold">${u.team}</span></td>
+                                                        <td class="p-3">
+                                                            <span class="px-2.5 py-1 rounded-lg text-xs font-semibold ${u.active !== false ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">
+                                                                ${u.active !== false ? 'Active' : 'Inactive'}
+                                                            </span>
+                                                        </td>
+                                                        <td class="p-3 font-semibold">৳${uTarget.toLocaleString()}</td>
+                                                        <td class="p-3 font-semibold text-slate-600">৳${uDaily.toLocaleString()}</td>
+                                                        <td class="p-3 flex gap-2">
+                                                            <button onclick="viewAgentDetails('${u.username}')" class="text-orange-600 hover:text-orange-800 text-xs font-semibold">View Details</button>
+                                                        </td>
+                                                    </tr>
+                                                `;
+                                            }).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
+                        `}
                     </div>
 
                     <div class="${State.adminTab === 'attendance' ? '' : 'hidden'} space-y-6">
@@ -333,11 +430,11 @@
                                             <th class="p-3">Login Time</th>
                                             <th class="p-3">Status</th>
                                             <th class="p-3">Break Reason</th>
-                                            <th class="p-3">Action</th>
+                                            ${!isSupervisor ? '<th class="p-3">Action</th>' : ''}
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-slate-200">
-                                        ${State.attendance.length === 0 ? `<tr><td colspan="6" class="p-4 text-center text-slate-400">No attendance logs found.</td></tr>` :
+                                        ${State.attendance.length === 0 ? `<tr><td colspan="${isSupervisor ? 5 : 6}" class="p-4 text-center text-slate-400">No attendance logs found.</td></tr>` :
                                         State.attendance.map((att, idx) => `
                                             <tr>
                                                 <td class="p-3 font-medium text-slate-900">${att.name} (${att.username})</td>
@@ -349,10 +446,12 @@
                                                     </span>
                                                 </td>
                                                 <td class="p-3 text-slate-500">${att.breakReason || 'None'}</td>
-                                                <td class="p-3 flex gap-2">
-                                                    <button onclick="adminForceLogout(${idx})" class="text-amber-600 hover:text-amber-800 text-xs font-semibold bg-amber-50 px-2 py-1 rounded border border-amber-200">Close Shift</button>
-                                                    <button onclick="deleteAttendance(${idx})" class="text-red-500 hover:text-red-700 text-xs font-semibold bg-red-50 px-2 py-1 rounded border border-red-200">Clear Log</button>
-                                                </td>
+                                                ${!isSupervisor ? `
+                                                    <td class="p-3 flex gap-2">
+                                                        <button onclick="adminForceLogout(${idx})" class="text-amber-600 hover:text-amber-800 text-xs font-semibold bg-amber-50 px-2 py-1 rounded border border-amber-200">Close Shift</button>
+                                                        <button onclick="deleteAttendance(${idx})" class="text-red-500 hover:text-red-700 text-xs font-semibold bg-red-50 px-2 py-1 rounded border border-red-200">Clear</button>
+                                                    </td>
+                                                ` : ''}
                                             </tr>
                                         `).join('')}
                                     </tbody>
@@ -361,72 +460,80 @@
                         </div>
                     </div>
 
-                    <div class="${State.adminTab === 'reports' ? '' : 'hidden'} space-y-6">
-                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                            <h3 class="text-lg font-bold text-slate-900 mb-4">📝 Manual Report Entry (Admin Override)</h3>
-                            <form id="adminReportForm" class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
-                                <div>
-                                    <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Select Agent</label>
-                                    <select id="adminAgentUsername" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
-                                        <option value="">Choose Agent</option>
-                                        ${agents.map(a => `<option value="${a.username}">${a.name} (${a.username})</option>`).join('')}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Date</label>
-                                    <input type="date" id="adminReportDate" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Leads</label>
-                                    <input type="number" id="adminLeads" placeholder="Leads" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Orders</label>
-                                    <input type="number" id="adminOrders" placeholder="Orders" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Amount (BDT)</label>
-                                    <input type="number" id="adminAmount" placeholder="Amount" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
-                                </div>
-                                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition shadow-sm text-sm">Add Report</button>
-                            </form>
-                        </div>
+                    ${!isSupervisor ? `
+                        <div class="${State.adminTab === 'reports' ? '' : 'hidden'} space-y-6">
+                            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                                <h3 class="text-lg font-bold text-slate-900 mb-4">📝 Manual Report Entry (Admin Override)</h3>
+                                <form id="adminReportForm" class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Select Agent</label>
+                                        <select id="adminAgentUsername" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                            <option value="">Choose Agent</option>
+                                            ${agents.map(a => `<option value="${a.username}">${a.name} (${a.username})</option>`).join('')}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Date</label>
+                                        <input type="date" id="adminReportDate" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Leads</label>
+                                        <input type="number" id="adminLeads" placeholder="Leads" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Orders</label>
+                                        <input type="number" id="adminOrders" placeholder="Orders" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Amount (BDT)</label>
+                                        <input type="number" id="adminAmount" placeholder="Amount" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                    </div>
+                                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition shadow-sm text-sm">Add Report</button>
+                                </form>
+                            </div>
 
-                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                            <h3 class="text-lg font-bold text-slate-900 mb-4">All Submitted Reports</h3>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-slate-700">
-                                    <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
-                                        <tr>
-                                            <th class="p-3">Date</th>
-                                            <th class="p-3">Agent Name</th>
-                                            <th class="p-3">Team</th>
-                                            <th class="p-3">Leads</th>
-                                            <th class="p-3">Orders</th>
-                                            <th class="p-3">Amount (BDT)</th>
-                                            <th class="p-3">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-200">
-                                        ${State.reports.length === 0 ? `<tr><td colspan="7" class="p-4 text-center text-slate-400">No reports submitted yet.</td></tr>` :
-                                        State.reports.map((r, idx) => `
+                            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                                <h3 class="text-lg font-bold text-slate-900 mb-4">All Submitted Reports</h3>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left text-sm text-slate-700">
+                                        <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
                                             <tr>
-                                                <td class="p-3">${r.date}</td>
-                                                <td class="p-3 font-medium text-slate-900">${r.name}</td>
-                                                <td class="p-3 text-slate-500">${r.team}</td>
-                                                <td class="p-3">${r.leads}</td>
-                                                <td class="p-3">${r.orders}</td>
-                                                <td class="p-3 font-semibold text-orange-600">৳${(r.amount || 0).toLocaleString()}</td>
-                                                <td class="p-3">
-                                                    <button onclick="deleteReport(${idx})" class="text-red-500 hover:text-red-700 text-xs font-semibold">Delete</button>
-                                                </td>
+                                                <th class="p-3">Date</th>
+                                                <th class="p-3">Agent Name</th>
+                                                <th class="p-3">Team</th>
+                                                <th class="p-3">Leads</th>
+                                                <th class="p-3">Orders</th>
+                                                <th class="p-3">Conversion</th>
+                                                <th class="p-3">Amount (BDT)</th>
+                                                <th class="p-3">Action</th>
                                             </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-200">
+                                            ${State.reports.length === 0 ? `<tr><td colspan="8" class="p-4 text-center text-slate-400">No reports submitted yet.</td></tr>` :
+                                            State.reports.map((r, idx) => {
+                                                const rConv = r.leads > 0 ? ((r.orders / r.leads) * 100).toFixed(1) : 0;
+                                                return `
+                                                    <tr>
+                                                        <td class="p-3">${r.date}</td>
+                                                        <td class="p-3 font-medium text-slate-900">${r.name}</td>
+                                                        <td class="p-3 text-slate-500">${r.team}</td>
+                                                        <td class="p-3">${r.leads}</td>
+                                                        <td class="p-3">${r.orders}</td>
+                                                        <td class="p-3 text-blue-600 font-semibold">${rConv}%</td>
+                                                        <td class="p-3 font-semibold text-orange-600">৳${(r.amount || 0).toLocaleString()}</td>
+                                                        <td class="p-3 flex gap-2">
+                                                            <button onclick="editReportPrompt(${idx})" class="text-blue-600 hover:text-blue-800 text-xs font-semibold">Edit</button>
+                                                            <button onclick="deleteReport(${idx})" class="text-red-500 hover:text-red-700 text-xs font-semibold">Delete</button>
+                                                        </td>
+                                                    </tr>
+                                                `;
+                                            }).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    ` : ''}
 
                     <div class="${State.adminTab === 'leaderboard' ? '' : 'hidden'} space-y-6">
                         <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
@@ -471,7 +578,7 @@
                                         ${agentStats.map((item, idx) => `
                                             <tr>
                                                 <td class="p-3 font-bold text-base text-slate-900">${idx === 0 ? '🥇 1st' : idx === 1 ? '🥈 2nd' : idx === 2 ? '🥉 3rd' : `#${idx+1}`}</td>
-                                                <td class="p-3 font-medium text-slate-900">${item.name}</td>
+                                                <td class="p-3 font-medium text-slate-900"><button onclick="viewAgentDetails('${item.username}')" class="text-orange-600 hover:underline font-bold">${item.name}</button></td>
                                                 <td class="p-3 text-slate-500">${item.team}</td>
                                                 <td class="p-3 font-semibold text-slate-800">${item.leads}</td>
                                                 <td class="p-3 font-semibold text-slate-800">${item.orders}</td>
@@ -497,6 +604,7 @@
 
         window.setAdminTab = function(tabName) {
             State.adminTab = tabName;
+            State.selectedAgentDetails = null;
             render();
         }
 
@@ -505,7 +613,18 @@
             render();
         }
 
+        window.viewAgentDetails = function(username) {
+            State.selectedAgentDetails = username;
+            render();
+        }
+
+        window.closeAgentDetails = function() {
+            State.selectedAgentDetails = null;
+            render();
+        }
+
         window.toggleAgentStatus = function(id) {
+            if (State.currentUser.role === 'supervisor') return;
             const user = State.users.find(u => u.id === id);
             if (user) {
                 user.active = user.active === false ? true : false;
@@ -525,6 +644,7 @@
         }
 
         window.importData = function(event) {
+            if (State.currentUser.role === 'supervisor') return;
             const fileReader = new FileReader();
             if (event.target.files[0]) {
                 fileReader.readAsText(event.target.files[0], "UTF-8");
@@ -550,6 +670,8 @@
         }
 
         function attachAdminEvents() {
+            if (State.currentUser.role === 'supervisor') return;
+
             const form = document.getElementById('createAgentForm');
             if (form) {
                 form.addEventListener('submit', (e) => {
@@ -604,6 +726,7 @@
         }
 
         window.updateAgentTarget = function(username) {
+            if (State.currentUser.role === 'supervisor') return;
             const val = parseFloat(document.getElementById(`target_${username}`).value) || 0;
             State.targets[username] = val;
             saveState();
@@ -611,6 +734,7 @@
         }
 
         window.editUserPrompt = function(id) {
+            if (State.currentUser.role === 'supervisor') return;
             const user = State.users.find(u => u.id === id);
             if (!user) return;
             const newName = prompt('Edit Agent Full Name:', user.name);
@@ -626,6 +750,7 @@
         }
 
         window.deleteUser = function(id) {
+            if (State.currentUser.role === 'supervisor') return;
             if (confirm('Are you sure you want to delete this agent?')) {
                 State.users = State.users.filter(u => u.id !== id);
                 saveState();
@@ -634,6 +759,7 @@
         }
 
         window.deleteReport = function(index) {
+            if (State.currentUser.role === 'supervisor') return;
             if (confirm('Are you sure you want to delete this report?')) {
                 State.reports.splice(index, 1);
                 saveState();
@@ -641,7 +767,23 @@
             }
         }
 
+        window.editReportPrompt = function(index) {
+            if (State.currentUser.role === 'supervisor') return;
+            const r = State.reports[index];
+            if (!r) return;
+            const newLeads = prompt('Edit Leads:', r.leads);
+            const newOrders = prompt('Edit Orders:', r.orders);
+            const newAmount = prompt('Edit Sales Amount (BDT):', r.amount);
+            if (newLeads !== null) r.leads = parseInt(newLeads) || 0;
+            if (newOrders !== null) r.orders = parseInt(newOrders) || 0;
+            if (newAmount !== null) r.amount = parseFloat(newAmount) || 0;
+            saveState();
+            alert('Report updated successfully!');
+            render();
+        }
+
         window.adminForceLogout = function(index) {
+            if (State.currentUser.role === 'supervisor') return;
             if (confirm('Force close this agent shift?')) {
                 State.attendance[index].logoutTime = new Date().toLocaleTimeString();
                 State.attendance[index].onBreak = false;
@@ -651,6 +793,7 @@
         }
 
         window.deleteAttendance = function(index) {
+            if (State.currentUser.role === 'supervisor') return;
             if (confirm('Are you sure you want to delete this attendance log?')) {
                 State.attendance.splice(index, 1);
                 saveState();
@@ -663,6 +806,9 @@
             const myTarget = State.targets[State.currentUser.username] || 50000;
             const myReports = State.reports.filter(r => r.username === State.currentUser.username);
             const totalSales = myReports.reduce((sum, r) => sum + (r.amount || 0), 0);
+            const totalLeads = myReports.reduce((sum, r) => sum + (r.leads || 0), 0);
+            const totalOrders = myReports.reduce((sum, r) => sum + (r.orders || 0), 0);
+            const myConversion = totalLeads > 0 ? ((totalOrders / totalLeads) * 100).toFixed(1) : 0;
             const achievementRate = myTarget > 0 ? Math.min(Math.round((totalSales / myTarget) * 100), 100) : 0;
 
             const agents = State.users.filter(u => u.role === 'agent' && u.active !== false);
@@ -719,14 +865,22 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm border-l-4 border-l-slate-700">
-                                <p class="text-slate-500 text-xs uppercase font-semibold">Your Month Target Amount</p>
-                                <h3 class="text-3xl font-bold text-slate-900 mt-1">৳${myTarget.toLocaleString()}</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm border-l-4 border-l-slate-700">
+                                <p class="text-slate-500 text-xs uppercase font-semibold">Month Target</p>
+                                <h3 class="text-xl font-bold text-slate-900 mt-1">৳${myTarget.toLocaleString()}</h3>
                             </div>
-                            <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm border-l-4 border-l-orange-500">
-                                <p class="text-slate-500 text-xs uppercase font-semibold">Total Month Sales Achieved</p>
-                                <h3 class="text-3xl font-bold text-orange-600 mt-1">৳${totalSales.toLocaleString()} (${achievementRate}%)</h3>
+                            <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm border-l-4 border-l-orange-500">
+                                <p class="text-slate-500 text-xs uppercase font-semibold">Sales Achieved</p>
+                                <h3 class="text-xl font-bold text-orange-600 mt-1">৳${totalSales.toLocaleString()} (${achievementRate}%)</h3>
+                            </div>
+                            <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm border-l-4 border-l-blue-500">
+                                <p class="text-slate-500 text-xs uppercase font-semibold">Total Leads / Orders</p>
+                                <h3 class="text-xl font-bold text-slate-900 mt-1">${totalLeads} / ${totalOrders}</h3>
+                            </div>
+                            <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm border-l-4 border-l-purple-500">
+                                <p class="text-slate-500 text-xs uppercase font-semibold">Conversion Rate</p>
+                                <h3 class="text-xl font-bold text-purple-600 mt-1">${myConversion}%</h3>
                             </div>
                         </div>
 
@@ -781,17 +935,24 @@
 
                     <div class="${State.agentTab === 'leaderboard' ? '' : 'hidden'} space-y-6">
                         <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                            <h3 class="text-lg font-bold text-slate-900 mb-4">📊 Team-wise Comparison</h3>
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">📊 Team-wise Comparison & Targets</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                ${teamComparison.map(t => `
-                                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl shadow-sm">
-                                        <div class="flex justify-between items-center mb-2">
-                                            <h4 class="font-bold text-slate-900">${t.teamName}</h4>
-                                            <span class="text-xs bg-orange-100 text-orange-600 px-2.5 py-0.5 rounded-full font-semibold">${t.agentsCount} Agents</span>
+                                ${teamComparison.map(t => {
+                                    const teamRatio = t.totalTarget > 0 ? Math.min(Math.round((t.totalSales / t.totalTarget) * 100), 100) : 0;
+                                    return `
+                                        <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-sm">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <h4 class="font-bold text-base text-slate-900">${t.teamName}</h4>
+                                                <span class="text-xs bg-orange-100 text-orange-600 px-2.5 py-1 rounded-full font-semibold">${t.agentsCount} Agents</span>
+                                            </div>
+                                            <p class="text-sm text-slate-600 mb-2">Total Sales: <span class="font-bold text-orange-600">৳${t.totalSales.toLocaleString()}</span> / Total Target: <span class="font-semibold text-slate-900">৳${t.totalTarget.toLocaleString()}</span></p>
+                                            <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+                                                <div class="bg-orange-500 h-2.5 rounded-full" style="width: ${teamRatio}%"></div>
+                                            </div>
+                                            <span class="text-xs text-slate-500 mt-1 block">${teamRatio}% team target achieved</span>
                                         </div>
-                                        <p class="text-sm text-slate-500">Sales: <span class="font-bold text-orange-600">৳${t.totalSales.toLocaleString()}</span> / Target: ৳${t.totalTarget.toLocaleString()}</p>
-                                    </div>
-                                `).join('')}
+                                    `;
+                                }).join('')}
                             </div>
                         </div>
 
