@@ -15,31 +15,53 @@
     <div id="app" class="flex-grow flex flex-col"></div>
 
     <script>
-        // Clean v2 storage keys to completely avoid old conflicts
-        let savedUsers = JSON.parse(localStorage.getItem('gb_portal_users_v2'));
+        // Initializing database with Admin accounts and all Agents from provided images
+        let savedUsers = JSON.parse(localStorage.getItem('gb_portal_users_v4'));
         if (!savedUsers || !Array.isArray(savedUsers) || savedUsers.length === 0) {
             savedUsers = [
-                { id: 1, name: 'Admin User', username: 'admin', password: 'admin123', role: 'admin', team: 'Management', active: true }
+                // Admins / Team Leaders
+                { id: 1, name: 'Md. Nazimur Rahman', username: '10122', password: 'admin123', role: 'admin', team: 'Team Nazim', active: true },
+                { id: 2, name: 'Md Abdus Samad', username: '10107', password: 'admin123', role: 'admin', team: 'Team Abdus Samad', active: true },
+                { id: 3, name: 'Admin Master', username: 'admin', password: 'admin123', role: 'admin', team: 'Management', active: true },
+                
+                // Agents from Images
+                { id: 4, name: 'Habibur Rahman Shuvo', username: '10098', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                { id: 5, name: 'Al-Amin Kazi', username: '10136', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                { id: 6, name: 'Zubayer Al Mahmud', username: '11007', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                { id: 7, name: 'Md. Mehedi Amin', username: '11101', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                { id: 8, name: 'Abu Sayed', username: '11120', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                { id: 9, name: 'Rabbir Hossain Molla', username: '11130', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                { id: 10, name: 'Abdullah Al Soad', username: '10806', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                { id: 11, name: 'Al-Amin', username: '10128', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                
+                { id: 12, name: 'Shagor Ahmed', username: '10191', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                { id: 13, name: 'Abdullah Dipu', username: '10289', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                { id: 14, name: 'Hasibul Islam Eraz', username: '11044', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                { id: 15, name: 'Kamruzzaman Shujon', username: '10741', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                { id: 16, name: 'Md. Abdullah Mahmud', username: '10803', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                { id: 17, name: 'Md. Ashiqur Rahman', username: '11042', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                { id: 18, name: 'Sheikh MD Rayhan', username: '10328', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                { id: 19, name: 'Ranju Ahmed', username: '10135', password: '12345678', role: 'agent', team: 'Team Nazim', active: true }
             ];
         }
 
         const State = {
-            currentUser: JSON.parse(localStorage.getItem('gb_portal_current_user_v2')) || null,
+            currentUser: JSON.parse(localStorage.getItem('gb_portal_current_user_v4')) || null,
             users: savedUsers,
-            attendance: JSON.parse(localStorage.getItem('gb_portal_attendance_v2')) || [],
-            reports: JSON.parse(localStorage.getItem('gb_portal_reports_v2')) || [],
-            targets: JSON.parse(localStorage.getItem('gb_portal_targets_v2')) || {},
+            attendance: JSON.parse(localStorage.getItem('gb_portal_attendance_v4')) || [],
+            reports: JSON.parse(localStorage.getItem('gb_portal_reports_v4')) || [],
+            targets: JSON.parse(localStorage.getItem('gb_portal_targets_v4')) || {},
             adminTab: 'overview',
             adminViewMode: 'month',
             agentTab: 'overview'
         };
 
         function saveState() {
-            localStorage.setItem('gb_portal_current_user_v2', JSON.stringify(State.currentUser));
-            localStorage.setItem('gb_portal_users_v2', JSON.stringify(State.users));
-            localStorage.setItem('gb_portal_attendance_v2', JSON.stringify(State.attendance));
-            localStorage.setItem('gb_portal_reports_v2', JSON.stringify(State.reports));
-            localStorage.setItem('gb_portal_targets_v2', JSON.stringify(State.targets));
+            localStorage.setItem('gb_portal_current_user_v4', JSON.stringify(State.currentUser));
+            localStorage.setItem('gb_portal_users_v4', JSON.stringify(State.users));
+            localStorage.setItem('gb_portal_attendance_v4', JSON.stringify(State.attendance));
+            localStorage.setItem('gb_portal_reports_v4', JSON.stringify(State.reports));
+            localStorage.setItem('gb_portal_targets_v4', JSON.stringify(State.targets));
         }
 
         function render() {
@@ -71,8 +93,8 @@
                         </div>
                         <form id="loginForm" class="space-y-5">
                             <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Username</label>
-                                <input type="text" id="username" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:border-orange-500 transition text-sm" placeholder="Enter username">
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Username (Emp ID)</label>
+                                <input type="text" id="username" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:border-orange-500 transition text-sm" placeholder="Enter Emp ID">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Password</label>
@@ -83,6 +105,10 @@
                             </button>
                         </form>
                         <div id="loginError" class="mt-4 text-red-500 text-center text-sm hidden font-medium"></div>
+                        <div class="mt-6 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600">
+                            <p class="font-semibold text-slate-700 mb-1">Admin Access:</p>
+                            <p>Nazim: <span class="font-mono text-orange-600">10122</span> | Samad: <span class="font-mono text-orange-600">10107</span></p>
+                        </div>
                     </div>
                 </div>
             `;
@@ -245,8 +271,8 @@
                             <h3 class="text-lg font-bold text-slate-900 mb-4">Create New Agent Account</h3>
                             <form id="createAgentForm" class="grid grid-cols-1 md:grid-cols-5 gap-4">
                                 <input type="text" id="newName" placeholder="Agent Full Name" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
-                                <input type="text" id="newUsername" placeholder="Username (e.g. 11044)" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
-                                <input type="text" id="newPassword" placeholder="Password (e.g. 12345)" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                <input type="text" id="newUsername" placeholder="Emp ID (e.g. 11044)" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                <input type="text" id="newPassword" placeholder="Password (e.g. 12345678)" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
                                 <select id="newTeam" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
                                     <option value="Team Nazim">Team Nazim</option>
                                     <option value="Team Abdus Samad">Team Abdus Samad</option>
@@ -262,7 +288,7 @@
                                     <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
                                         <tr>
                                             <th class="p-3">Name</th>
-                                            <th class="p-3">Username</th>
+                                            <th class="p-3">Emp ID</th>
                                             <th class="p-3">Password</th>
                                             <th class="p-3">Team</th>
                                             <th class="p-3">Status (Active / Off)</th>
@@ -511,7 +537,7 @@
                     const team = document.getElementById('newTeam').value;
 
                     if (State.users.some(u => String(u.username).trim() === username)) {
-                        alert('Username already exists!');
+                        alert('Username / Emp ID already exists!');
                         return;
                     }
 
@@ -565,7 +591,7 @@
             const user = State.users.find(u => u.id === id);
             if (!user) return;
             const newName = prompt('Edit Agent Full Name:', user.name);
-            const newUsername = prompt('Edit Username:', user.username);
+            const newUsername = prompt('Edit Emp ID:', user.username);
             const newPass = prompt('Edit Password:', user.password);
             const newTeam = prompt('Edit Team (Team Nazim / Team Abdus Samad):', user.team);
             if (newName) user.name = newName.trim();
@@ -652,7 +678,7 @@
                         <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-md flex justify-between items-center">
                             <div>
                                 <h2 class="text-xl font-bold">Welcome, ${State.currentUser.name}!</h2>
-                                <p class="text-xs text-slate-400 mt-1">Team: ${State.currentUser.team}</p>
+                                <p class="text-xs text-slate-400 mt-1">Team: ${State.currentUser.team} | Emp ID: ${State.currentUser.username}</p>
                             </div>
                             <div class="bg-slate-800 px-4 py-2 rounded-xl text-xs text-orange-400 border border-slate-700 font-semibold">
                                 📅 Month Performance Overview
