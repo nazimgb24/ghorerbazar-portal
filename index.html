@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GhorerBazar Facebook Team Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-white text-slate-800 min-h-screen flex flex-col">
+
+    <div id="app" class="flex-grow flex flex-col"></div>
+
+    <script>
+        const State = {
+            currentUser: JSON.parse(localStorage.getItem('gb_current_user')) || null,
+            users: JSON.parse(localStorage.getItem('gb_users')) || [
+                { id: 1, name: 'Admin User', username: 'admin', password: 'admin123', role: 'admin', team: 'Management' }
+            ],
+            attendance: JSON.parse(localStorage.getItem('gb_attendance')) || [],
+            reports: JSON.parse(localStorage.getItem('gb_reports')) || [],
+            targets: JSON.parse(localStorage.getItem('gb_targets')) || {}
+        };
+
+        function saveState() {
+            localStorage.setItem('gb_current_user', JSON.stringify(State.currentUser));
+            localStorage.setItem('gb_users', JSON.stringify(State.users));
+            localStorage.setItem('gb_attendance', JSON.stringify(State.attendance));
+            localStorage.setItem('gb_reports', JSON.stringify(State.reports));
+            localStorage.setItem('gb_targets', JSON.stringify(State.targets));
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+            app.innerHTML = '';
+
+            if (!State.currentUser) {
+                app.innerHTML = renderLogin();
+                attachLoginEvents();
+            } else if (State.currentUser.role === 'admin') {
+                app.innerHTML = renderAdminDashboard();
+                attachAdminEvents();
+            } else {
+                app.innerHTML = renderAgentDashboard();
+                attachAgentEvents();
+            }
+        }
+
+        function renderLogin() {
+            return `
+                <div class="flex-grow flex items-center justify-center p-4 bg-white">
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl shadow-xl w-full max-w-md p-8">
+                        <div class="text-center mb-8">
+                            <div class="inline-flex bg-orange-500 text-white p-3.5 rounded-xl shadow-md mb-4 items-center justify-center">
+                                <svg class="w-8 h-8 text-white fill-current" viewBox="0 0 24 24">
+                                    <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                                </svg>
+                            </div>
+                            <h1 class="text-2xl font-bold text-slate-900">GhorerBazar</h1>
+                            <p class="text-sm text-slate-500 mt-1">FACEBOOK TEAM PORTAL</p>
+                        </div>
+                        <form id="loginForm" class="space-y-5">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Username</label>
+                                <input type="text" id="username" required class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:outline-none focus:border-orange-500" placeholder="Enter your username">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Password</label>
+                                <input type="password" id="password" required class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:outline-none focus:border-orange-500" placeholder="Enter your password">
+                            </div>
+                            <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition shadow-md flex items-center justify-center gap-2">
+                                Sign In &rarr;
+                            </button>
+                        </form>
+                        <div id="loginError" class="mt-4 text-red-500 text-center text-sm hidden"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function attachLoginEvents() {
+            document.getElementById('loginForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const u = document.getElementById('username').value.trim();
+                const p = document.getElementById('password').value.trim();
+                const found = State.users.find(x => x.username === u && x.password === p);
+                if (found) {
+                    State.currentUser = found;
+                    saveState();
+                    render();
+                } else {
+                    const err = document.getElementById('loginError');
+                    err.textContent = 'Invalid username or password!';
+                    err.classList.remove('hidden');
+                }
+            });
+        }
+
+        function renderAdminDashboard() {
+            const activeAttendance = State.attendance.filter(a => !a.logoutTime);
+            const agents = State.users.filter(u => u.role === 'agent');
+
+            return `
+                <nav class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shadow-md">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-orange-500 text-white p-2.5 rounded-xl flex items-center justify-center shadow">
+                            <svg class="w-5 h-5 text-white fill-current" viewBox="0 0 24 24">
+                                <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                            </svg>
+                        </span>
+                        <div>
+                            <h2 class="font-bold text-white">GhorerBazar Admin Panel</h2>
+                            <p class="text-xs text-slate-400">Welcome, ${State.currentUser.name} (Full Control & Override Access)</p>
+                        </div>
+                    </div>
+                    <button onclick="logout()" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Logout</button>
+                </nav>
+
+                <div class="flex-grow p-6 max-w-7xl mx-auto w-full space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-slate-50 border border-slate-200 p-6 rounded-xl shadow-sm">
+                            <p class="text-slate-500 text-sm">Total Agents Online</p>
+                            <h3 class="text-3xl font-bold text-orange-500 mt-1">${activeAttendance.length}</h3>
+                        </div>
+                        <div class="bg-slate-50 border border-slate-200 p-6 rounded-xl shadow-sm">
+                            <p class="text-slate-500 text-sm">Total Registered Agents</p>
+                            <h3 class="text-3xl font-bold text-slate-900 mt-1">${agents.length}</h3>
+                        </div>
+                    </div>
+
+                    <!-- Create Agent Account -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">Create Agent Account</h3>
+                        <form id="createAgentForm" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                            <input type="text" id="newName" placeholder="Agent Full Name" required class="bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
+                            <input type="text" id="newUsername" placeholder="Username" required class="bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
+                            <input type="text" id="newPassword" placeholder="Password" required class="bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
+                            <select id="newTeam" class="bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
+                                <option value="Team Nazim">Team Nazim</option>
+                                <option value="Team Abdus Samad">Team Abdus Samad</option>
+                            </select>
+                            <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition shadow-sm">Add Agent</button>
+                        </form>
+                    </div>
+
+                    <!-- Admin Manual Report Entry (For Missing Dates) -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">📝 Manual Report Entry (Admin Override)</h3>
+                        <form id="adminReportForm" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Select Agent</label>
+                                <select id="adminAgentUsername" required class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
+                                    <option value="">Choose Agent</option>
+                                    ${agents.map(a => `<option value="${a.username}">${a.name} (${a.team})</option>`).join('')}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Date</label>
+                                <input type="date" id="adminReportDate" required class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Total Leads</label>
+                                <input type="number" id="adminLeads" placeholder="Leads" required class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Confirmed Orders</label>
+                                <input type="number" id="adminOrders" placeholder="Orders" required class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
+                            </div>
+                            <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition shadow-sm">Add Report</button>
+                        </form>
+                    </div>
+
+                    <!-- Manage Agents & Individual Targets -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">Manage Agents, Details & Individual Targets</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-slate-700">
+                                <thead class="bg-slate-200 text-slate-700 uppercase text-xs">
+                                    <tr>
+                                        <th class="p-3">Name</th>
+                                        <th class="p-3">Username</th>
+                                        <th class="p-3">Team</th>
+                                        <th class="p-3">Individual Target (Orders)</th>
+                                        <th class="p-3">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200">
+                                    ${agents.length === 0 ? `<tr><td colspan="5" class="p-4 text-center text-slate-400">No agents found. Create one above.</td></tr>` : 
+                                    agents.map(u => `
+                                        <tr>
+                                            <td class="p-3 font-medium text-slate-900">${u.name}</td>
+                                            <td class="p-3 text-slate-600">${u.username}</td>
+                                            <td class="p-3"><span class="bg-slate-200 text-slate-800 px-2 py-1 rounded text-xs font-semibold">${u.team}</span></td>
+                                            <td class="p-3">
+                                                <div class="flex items-center gap-2">
+                                                    <input type="number" id="target_${u.username}" value="${State.targets[u.username] || 30}" class="bg-white border border-slate-300 rounded px-2 py-1 w-20 text-slate-900">
+                                                    <button onclick="updateAgentTarget('${u.username}')" class="bg-orange-500 hover:bg-orange-600 text-white px-2.5 py-1 rounded text-xs font-semibold">Set</button>
+                                                </div>
+                                            </td>
+                                            <td class="p-3 flex gap-2">
+                                                <button onclick="editUserPrompt(${u.id})" class="text-blue-600 hover:text-blue-800 text-xs font-semibold">Edit</button>
+                                                <button onclick="deleteUser(${u.id})" class="text-red-500 hover:text-red-700 text-xs font-semibold">Delete</button>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- All Submitted Reports (With Delete Option) -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">All Submitted Reports (Full Management Access)</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-slate-700">
+                                <thead class="bg-slate-200 text-slate-700 uppercase text-xs">
+                                    <tr>
+                                        <th class="p-3">Date</th>
+                                        <th class="p-3">Agent Name</th>
+                                        <th class="p-3">Team</th>
+                                        <th class="p-3">Leads</th>
+                                        <th class="p-3">Orders Confirmed</th>
+                                        <th class="p-3">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200">
+                                    ${State.reports.length === 0 ? `<tr><td colspan="6" class="p-4 text-center text-slate-400">No reports submitted yet.</td></tr>` :
+                                    State.reports.map((r, idx) => `
+                                        <tr>
+                                            <td class="p-3">${r.date}</td>
+                                            <td class="p-3 font-medium text-slate-900">${r.name}</td>
+                                            <td class="p-3">${r.team}</td>
+                                            <td class="p-3">${r.leads}</td>
+                                            <td class="p-3 font-semibold text-orange-600">${r.orders}</td>
+                                            <td class="p-3">
+                                                <button onclick="deleteReport(${idx})" class="text-red-500 hover:text-red-700 text-xs font-semibold">Delete</button>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function attachAdminEvents() {
+            const form = document.getElementById('createAgentForm');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const name = document.getElementById('newName').value.trim();
+                    const username = document.getElementById('newUsername').value.trim();
+                    const password = document.getElementById('newPassword').value.trim();
+                    const team = document.getElementById('newTeam').value;
+
+                    if (State.users.some(u => u.username === username)) {
+                        alert('Username already exists!');
+                        return;
+                    }
+
+                    State.users.push({ id: Date.now(), name, username, password, role: 'agent', team });
+                    State.targets[username] = 30;
+                    saveState();
+                    render();
+                });
+            }
+
+            const adminReportForm = document.getElementById('adminReportForm');
+            if (adminReportForm) {
+                adminReportForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const username = document.getElementById('adminAgentUsername').value;
+                    const dateVal = document.getElementById('adminReportDate').value;
+                    const leads = parseInt(document.getElementById('adminLeads').value) || 0;
+                    const orders = parseInt(document.getElementById('adminOrders').value) || 0;
+
+                    const agent = State.users.find(u => u.username === username);
+                    if (!agent) return;
+
+                    // Format date nicely from YYYY-MM-DD to local string if needed or keep as selected date
+                    const formattedDate = new Date(dateVal).toLocaleDateString();
+
+                    State.reports.push({
+                        username: agent.username,
+                        name: agent.name,
+                        team: agent.team,
+                        leads,
+                        orders,
+                        date: formattedDate
+                    });
+                    saveState();
+                    alert('Manual report added successfully by Admin!');
+                    render();
+                });
+            }
+        }
+
+        window.updateAgentTarget = function(username) {
+            const val = parseInt(document.getElementById(`target_${username}`).value) || 0;
+            State.targets[username] = val;
+            saveState();
+            alert('Individual target updated successfully!');
+        }
+
+        window.editUserPrompt = function(id) {
+            const user = State.users.find(u => u.id === id);
+            if (!user) return;
+            const newName = prompt('Edit Agent Full Name:', user.name);
+            const newUsername = prompt('Edit Username:', user.username);
+            const newPass = prompt('Edit Password:', user.password);
+            const newTeam = prompt('Edit Team (Team Nazim / Team Abdus Samad):', user.team);
+            if (newName) user.name = newName.trim();
+            if (newUsername) user.username = newUsername.trim();
+            if (newPass) user.password = newPass.trim();
+            if (newTeam) user.team = newTeam.trim();
+            saveState();
+            render();
+        }
+
+        window.deleteUser = function(id) {
+            if (confirm('Are you sure you want to delete this agent?')) {
+                State.users = State.users.filter(u => u.id !== id);
+                saveState();
+                render();
+            }
+        }
+
+        window.deleteReport = function(index) {
+            if (confirm('Are you sure you want to delete this report?')) {
+                State.reports.splice(index, 1);
+                saveState();
+                render();
+            }
+        }
+
+        function renderAgentDashboard() {
+            const activeAttendance = State.attendance.find(a => a.username === State.currentUser.username && !a.logoutTime);
+            const myTarget = State.targets[State.currentUser.username] || 30;
+            const myReports = State.reports.filter(r => r.username === State.currentUser.username);
+            const totalOrders = myReports.reduce((sum, r) => sum + r.orders, 0);
+
+            const agents = State.users.filter(u => u.role === 'agent');
+            const leaderboard = agents.map(agent => {
+                const agentReports = State.reports.filter(r => r.username === agent.username);
+                const orders = agentReports.reduce((sum, r) => sum + r.orders, 0);
+                const leads = agentReports.reduce((sum, r) => sum + r.leads, 0);
+                const target = State.targets[agent.username] || 30;
+                const achievementRate = target > 0 ? Math.min(Math.round((orders / target) * 100), 100) : 0;
+                return {
+                    name: agent.name,
+                    username: agent.username,
+                    team: agent.team,
+                    orders,
+                    leads,
+                    target,
+                    achievementRate
+                };
+            }).sort((a, b) => b.orders - a.orders);
+
+            const teamsMap = {};
+            agents.forEach(agent => {
+                if (!teamsMap[agent.team]) {
+                    teamsMap[agent.team] = { teamName: agent.team, totalOrders: 0, totalTarget: 0, agentsCount: 0 };
+                }
+                teamsMap[agent.team].agentsCount += 1;
+                teamsMap[agent.team].totalTarget += (State.targets[agent.username] || 30);
+                const agentOrders = State.reports.filter(r => r.username === agent.username).reduce((sum, r) => sum + r.orders, 0);
+                teamsMap[agent.team].totalOrders += agentOrders;
+            });
+            const teamComparison = Object.values(teamsMap).sort((a, b) => b.totalOrders - a.totalOrders);
+
+            return `
+                <nav class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shadow-md">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-orange-500 text-white p-2.5 rounded-xl flex items-center justify-center shadow">
+                            <svg class="w-5 h-5 text-white fill-current" viewBox="0 0 24 24">
+                                <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                            </svg>
+                        </span>
+                        <div>
+                            <h2 class="font-bold text-white">${State.currentUser.name}</h2>
+                            <p class="text-xs text-slate-400">${State.currentUser.team}</p>
+                        </div>
+                    </div>
+                    <button onclick="logout()" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Logout</button>
+                </nav>
+
+                <div class="flex-grow p-6 max-w-5xl mx-auto w-full space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-slate-50 border border-slate-200 p-6 rounded-xl shadow-sm">
+                            <p class="text-slate-500 text-sm">Your Individual Target</p>
+                            <h3 class="text-3xl font-bold text-slate-900 mt-1">${myTarget} Orders</h3>
+                        </div>
+                        <div class="bg-slate-50 border border-slate-200 p-6 rounded-xl shadow-sm">
+                            <p class="text-slate-500 text-sm">Total Confirmed So Far</p>
+                            <h3 class="text-3xl font-bold text-orange-500 mt-1">${totalOrders} Orders</h3>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 text-center space-y-4 shadow-sm">
+                        <h3 class="text-xl font-bold text-slate-900">Shift & Attendance Portal</h3>
+                        <div class="flex justify-center gap-4">
+                            ${!activeAttendance ? `
+                                <button onclick="startShift()" class="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-lg shadow-md transition">Start Shift</button>
+                            ` : `
+                                <button onclick="endShift()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3 rounded-lg shadow-md transition">End Shift</button>
+                                <button onclick="toggleBreak()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-3 rounded-lg shadow-md transition">${activeAttendance.onBreak ? 'Resume Work' : 'Take Break'}</button>
+                            `}
+                        </div>
+                        <p class="text-sm text-slate-500">Status: <span class="font-semibold ${activeAttendance ? 'text-orange-500' : 'text-slate-400'}">${activeAttendance ? (activeAttendance.onBreak ? 'On Break' : 'Active Duty') : 'Offline'}</span></p>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">Submit Daily Sales Report</h3>
+                        <form id="reportForm" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Total Leads</label>
+                                    <input type="number" id="leads" required class="w-full bg-white border border-slate-300 rounded-lg px-4 py-2 text-slate-900">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Total Orders Confirmed</label>
+                                    <input type="number" id="orders" required class="w-full bg-white border border-slate-300 rounded-lg px-4 py-2 text-slate-900">
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition shadow-md">Submit Report</button>
+                        </form>
+                    </div>
+
+                    <!-- Team Comparison Section -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">📊 Team Comparison</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            ${teamComparison.map(t => `
+                                <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h4 class="font-bold text-slate-900">${t.teamName}</h4>
+                                        <span class="text-xs bg-orange-100 text-orange-600 px-2.5 py-1 rounded-full font-semibold">${t.agentsCount} Agents</span>
+                                    </div>
+                                    <p class="text-sm text-slate-500">Total Orders: <span class="font-bold text-orange-600">${t.totalOrders}</span> / Target: ${t.totalTarget}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Team Performance & Leaderboard Section -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                                🏆 Agent Leaderboard & Ranking
+                            </h3>
+                            <span class="text-xs font-semibold bg-orange-100 text-orange-600 px-3 py-1 rounded-full">Visible to All Agents</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-slate-700">
+                                <thead class="bg-slate-200 text-slate-700 uppercase text-xs">
+                                    <tr>
+                                        <th class="p-3">Rank</th>
+                                        <th class="p-3">Agent Name</th>
+                                        <th class="p-3">Team</th>
+                                        <th class="p-3">Confirmed Orders</th>
+                                        <th class="p-3">Target Progress</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200">
+                                    ${leaderboard.length === 0 ? `<tr><td colspan="5" class="p-4 text-center text-slate-400">No agents available.</td></tr>` :
+                                    leaderboard.map((item, idx) => `
+                                        <tr class="${item.username === State.currentUser.username ? 'bg-orange-50 font-semibold' : ''}">
+                                            <td class="p-3">
+                                                ${idx === 0 ? '🥇 1st' : idx === 1 ? '🥈 2nd' : idx === 2 ? '🥉 3rd' : `#${idx + 1}`}
+                                            </td>
+                                            <td class="p-3 text-slate-900">
+                                                ${item.name} ${item.username === State.currentUser.username ? '<span class="text-xs bg-orange-500 text-white px-2 py-0.5 rounded ml-1">You</span>' : ''}
+                                            </td>
+                                            <td class="p-3 text-slate-500">${item.team}</td>
+                                            <td class="p-3 text-orange-600 font-bold">${item.orders} / ${item.target}</td>
+                                            <td class="p-3 w-48">
+                                                <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+                                                    <div class="bg-orange-500 h-2.5 rounded-full" style="width: ${item.achievementRate}%"></div>
+                                                </div>
+                                                <span class="text-xs text-slate-500 mt-1 block">${item.achievementRate}% completed</span>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            `;
+        }
+
+        function attachAgentEvents() {
+            const form = document.getElementById('reportForm');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const leads = parseInt(document.getElementById('leads').value) || 0;
+                    const orders = parseInt(document.getElementById('orders').value) || 0;
+                    
+                    State.reports.push({
+                        username: State.currentUser.username,
+                        name: State.currentUser.name,
+                        team: State.currentUser.team,
+                        leads,
+                        orders,
+                        date: new Date().toLocaleDateString()
+                    });
+                    saveState();
+                    alert('Report submitted successfully!');
+                    render();
+                });
+            }
+        }
+
+        window.startShift = function() {
+            State.attendance.push({
+                username: State.currentUser.username,
+                name: State.currentUser.name,
+                team: State.currentUser.team,
+                loginTime: new Date().toLocaleTimeString(),
+                logoutTime: null,
+                onBreak: false
+            });
+            saveState();
+            render();
+        }
+
+        window.endShift = function() {
+            const att = State.attendance.find(a => a.username === State.currentUser.username && !a.logoutTime);
+            if (att) {
+                att.logoutTime = new Date().toLocaleTimeString();
+                att.onBreak = false;
+                saveState();
+                render();
+            }
+        }
+
+        window.toggleBreak = function() {
+            const att = State.attendance.find(a => a.username === State.currentUser.username && !a.logoutTime);
+            if (att) {
+                att.onBreak = !att.onBreak;
+                saveState();
+                render();
+            }
+        }
+
+        window.logout = function() {
+            State.currentUser = null;
+            saveState();
+            render();
+        }
+
+        render();
+    </script>
+</body>
+</html>
