@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GhorerBazar Facebook Team Portal</title>
+    <title>GhorerBazar Sales Performance Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="bg-white text-slate-800 min-h-screen flex flex-col">
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
 
     <div id="app" class="flex-grow flex flex-col"></div>
 
@@ -24,8 +24,8 @@
             reports: JSON.parse(localStorage.getItem('gb_reports')) || [],
             targets: JSON.parse(localStorage.getItem('gb_targets')) || {},
             adminTab: 'overview',
-            adminViewMode: 'month', // 'month' or 'today'
-            agentTab: 'overview' // agent tab navigation
+            adminViewMode: 'month',
+            agentTab: 'overview'
         };
 
         function saveState() {
@@ -54,27 +54,25 @@
 
         function renderLogin() {
             return `
-                <div class="flex-grow flex items-center justify-center p-4 bg-white">
-                    <div class="bg-slate-50 border border-slate-200 rounded-2xl shadow-xl w-full max-w-md p-8">
+                <div class="flex-grow flex items-center justify-center p-4 bg-slate-100">
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-xl w-full max-w-md p-8">
                         <div class="text-center mb-8">
-                            <div class="inline-flex bg-orange-500 text-white p-3.5 rounded-xl shadow-md mb-4 items-center justify-center">
-                                <svg class="w-8 h-8 text-white fill-current" viewBox="0 0 24 24">
-                                    <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
-                                </svg>
+                            <div class="inline-flex bg-orange-500 text-white p-3.5 rounded-xl shadow-md mb-4 items-center justify-center font-bold text-xl">
+                                GB
                             </div>
                             <h1 class="text-2xl font-bold text-slate-900">GhorerBazar</h1>
-                            <p class="text-sm text-slate-500 mt-1">FACEBOOK TEAM PORTAL</p>
+                            <p class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Sales Performance Portal</p>
                         </div>
                         <form id="loginForm" class="space-y-5">
                             <div>
                                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Username</label>
-                                <input type="text" id="username" required class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:outline-none focus:border-orange-500" placeholder="Enter your username">
+                                <input type="text" id="username" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:outline-none focus:border-orange-500" placeholder="Enter username">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Password</label>
-                                <input type="password" id="password" required class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:outline-none focus:border-orange-500" placeholder="Enter your password">
+                                <input type="password" id="password" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:outline-none focus:border-orange-500" placeholder="Enter password">
                             </div>
-                            <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition shadow-md flex items-center justify-center gap-2">
+                            <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition shadow-md">
                                 Sign In &rarr;
                             </button>
                         </form>
@@ -107,12 +105,9 @@
             const agents = State.users.filter(u => u.role === 'agent');
             const todayStr = new Date().toLocaleDateString();
 
-            // Filter reports based on adminViewMode (month vs today)
             const filteredReports = State.reports.filter(r => {
-                if (State.adminViewMode === 'today') {
-                    return r.date === todayStr;
-                }
-                return true; // default month/all-time
+                if (State.adminViewMode === 'today') return r.date === todayStr;
+                return true;
             });
 
             const totalSalesAll = filteredReports.reduce((sum, r) => sum + (r.amount || 0), 0);
@@ -142,74 +137,85 @@
             const teamComparison = Object.values(teamsMap).sort((a, b) => b.totalSales - a.totalSales);
 
             return `
-                <nav class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shadow-md">
+                <!-- Top Dark ERP Header -->
+                <nav class="bg-slate-900 text-white px-6 py-3 flex justify-between items-center shadow">
                     <div class="flex items-center gap-3">
-                        <span class="bg-orange-500 text-white p-2.5 rounded-xl flex items-center justify-center shadow">
-                            <svg class="w-5 h-5 text-white fill-current" viewBox="0 0 24 24">
-                                <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
-                            </svg>
-                        </span>
-                        <div>
-                            <h2 class="font-bold text-white">GhorerBazar Admin Panel</h2>
-                            <p class="text-xs text-slate-400">Welcome, ${State.currentUser.name}</p>
+                        <div class="bg-orange-500 text-white px-3 py-1.5 rounded font-bold text-sm tracking-wider">
+                            GHORER BAZAR
                         </div>
+                        <span class="text-xs text-slate-400">Admin Control Panel</span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <button onclick="exportData()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-700 transition">📥 Backup Data</button>
-                        <label class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-700 cursor-pointer transition">
+                        <button onclick="exportData()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded text-xs font-semibold border border-slate-700">📥 Backup</button>
+                        <label class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded text-xs font-semibold border border-slate-700 cursor-pointer">
                             📤 Restore <input type="file" id="importFile" onchange="importData(event)" class="hidden" accept=".json">
                         </label>
-                        <button onclick="logout()" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Logout</button>
+                        <button onclick="logout()" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-3 py-1.5 rounded text-xs font-semibold">Logout</button>
                     </div>
                 </nav>
 
-                <!-- Navigation Tabs -->
-                <div class="bg-slate-100 border-b border-slate-200 px-6 flex gap-2 overflow-x-auto">
-                    <button onclick="setAdminTab('overview')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'overview' ? 'border-orange-500 text-orange-600 bg-white shadow-sm' : 'border-transparent text-slate-600 hover:text-slate-900'}">📊 Sales Overview</button>
-                    <button onclick="setAdminTab('agents')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'agents' ? 'border-orange-500 text-orange-600 bg-white shadow-sm' : 'border-transparent text-slate-600 hover:text-slate-900'}">👥 Agent Management</button>
-                    <button onclick="setAdminTab('reports')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'reports' ? 'border-orange-500 text-orange-600 bg-white shadow-sm' : 'border-transparent text-slate-600 hover:text-slate-900'}">📝 Manual Report Entry</button>
-                    <button onclick="setAdminTab('leaderboard')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'leaderboard' ? 'border-orange-500 text-orange-600 bg-white shadow-sm' : 'border-transparent text-slate-600 hover:text-slate-900'}">🏆 Leaderboard & Rankings</button>
+                <!-- Navigation Tabs Bar -->
+                <div class="bg-white border-b border-slate-200 px-6 flex gap-4 shadow-sm">
+                    <button onclick="setAdminTab('overview')" class="py-3 px-3 font-semibold text-sm border-b-2 transition ${State.adminTab === 'overview' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📊 Sales Overview</button>
+                    <button onclick="setAdminTab('agents')" class="py-3 px-3 font-semibold text-sm border-b-2 transition ${State.adminTab === 'agents' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">👥 Agent Management</button>
+                    <button onclick="setAdminTab('reports')" class="py-3 px-3 font-semibold text-sm border-b-2 transition ${State.adminTab === 'reports' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📝 Manual Report Entry</button>
+                    <button onclick="setAdminTab('leaderboard')" class="py-3 px-3 font-semibold text-sm border-b-2 transition ${State.adminTab === 'leaderboard' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">🏆 Leaderboard & Rankings</button>
                 </div>
 
                 <div class="flex-grow p-6 max-w-7xl mx-auto w-full space-y-6">
                     
                     <!-- TAB 1: OVERVIEW -->
                     <div class="${State.adminTab === 'overview' ? '' : 'hidden'} space-y-6">
-                        <div class="flex justify-between items-center bg-slate-50 border border-slate-200 p-4 rounded-xl">
-                            <h3 class="font-bold text-slate-900">Viewing Mode: <span class="text-orange-600">${State.adminViewMode === 'month' ? '📅 Team Month-wise Overview' : '⚡ Today\'s Overview'}</span></h3>
-                            <div class="flex gap-2">
-                                <button onclick="setAdminViewMode('month')" class="px-4 py-2 text-xs font-semibold rounded-lg transition ${State.adminViewMode === 'month' ? 'bg-orange-500 text-white shadow' : 'bg-white text-slate-700 border border-slate-300'}">Month-wise</button>
-                                <button onclick="setAdminViewMode('today')" class="px-4 py-2 text-xs font-semibold rounded-lg transition ${State.adminViewMode === 'today' ? 'bg-orange-500 text-white shadow' : 'bg-white text-slate-700 border border-slate-300'}">Today's View</button>
+                        <!-- ERP Style Night Greeting Banner -->
+                        <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-md flex flex-col md:flex-row justify-between items-center gap-4">
+                            <div>
+                                <h2 class="text-xl font-bold">Good Day, ${State.currentUser.name}!</h2>
+                                <p class="text-xs text-slate-400 mt-1">Here's what's happening with sales performance today.</p>
+                            </div>
+                            <div class="flex items-center gap-3 bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-700 text-xs">
+                                <span class="text-slate-300">📅 ${new Date().toLocaleDateString()}</span>
+                                <span class="bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded font-semibold uppercase">${State.adminViewMode} Mode</span>
                             </div>
                         </div>
 
+                        <!-- Toggle View Mode -->
+                        <div class="flex justify-between items-center bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+                            <h3 class="font-bold text-slate-900 text-sm">Performance View Filter:</h3>
+                            <div class="flex gap-2">
+                                <button onclick="setAdminViewMode('month')" class="px-4 py-1.5 text-xs font-semibold rounded-lg transition ${State.adminViewMode === 'month' ? 'bg-orange-500 text-white shadow' : 'bg-slate-100 text-slate-700'}">Month-wise</button>
+                                <button onclick="setAdminViewMode('today')" class="px-4 py-1.5 text-xs font-semibold rounded-lg transition ${State.adminViewMode === 'today' ? 'bg-orange-500 text-white shadow' : 'bg-slate-100 text-slate-700'}">Today's View</button>
+                            </div>
+                        </div>
+
+                        <!-- ERP Style Soft Metric KPI Cards -->
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-sm">
+                            <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm border-l-4 border-l-orange-500">
                                 <p class="text-slate-500 text-xs uppercase font-semibold">Total Sales Amount</p>
                                 <h3 class="text-2xl font-bold text-orange-600 mt-1">৳${totalSalesAll.toLocaleString()}</h3>
                             </div>
-                            <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-sm">
-                                <p class="text-slate-500 text-xs uppercase font-semibold">Total Orders</p>
+                            <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm border-l-4 border-l-blue-500">
+                                <p class="text-slate-500 text-xs uppercase font-semibold">Total Orders Confirmed</p>
                                 <h3 class="text-2xl font-bold text-slate-900 mt-1">${totalOrdersAll}</h3>
                             </div>
-                            <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-sm">
-                                <p class="text-slate-500 text-xs uppercase font-semibold">Total Leads</p>
+                            <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm border-l-4 border-l-purple-500">
+                                <p class="text-slate-500 text-xs uppercase font-semibold">Total Leads Generated</p>
                                 <h3 class="text-2xl font-bold text-slate-900 mt-1">${totalLeadsAll}</h3>
                             </div>
-                            <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-sm">
+                            <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm border-l-4 border-l-emerald-500">
                                 <p class="text-slate-500 text-xs uppercase font-semibold">Agents Online</p>
-                                <h3 class="text-2xl font-bold text-green-600 mt-1">${activeAttendance.length} / ${agents.length}</h3>
+                                <h3 class="text-2xl font-bold text-emerald-600 mt-1">${activeAttendance.length} / ${agents.length}</h3>
                             </div>
                         </div>
 
-                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <!-- Team Comparison Cards -->
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">📊 Team Comparison</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 ${teamComparison.map(t => `
-                                    <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+                                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl shadow-sm">
                                         <div class="flex justify-between items-center mb-1">
                                             <h4 class="font-bold text-slate-900">${t.teamName}</h4>
-                                            <span class="text-xs bg-orange-100 text-orange-600 px-2.5 py-1 rounded-full font-semibold">${t.agentsCount} Agents</span>
+                                            <span class="text-xs bg-orange-100 text-orange-600 px-2.5 py-0.5 rounded-full font-semibold">${t.agentsCount} Agents</span>
                                         </div>
                                         <p class="text-sm text-slate-500">Sales: <span class="font-bold text-orange-600">৳${t.totalSales.toLocaleString()}</span> / Target: ৳${t.totalTarget.toLocaleString()}</p>
                                     </div>
@@ -220,25 +226,25 @@
 
                     <!-- TAB 2: AGENT MANAGEMENT -->
                     <div class="${State.adminTab === 'agents' ? '' : 'hidden'} space-y-6">
-                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">Create New Agent Account</h3>
                             <form id="createAgentForm" class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                                <input type="text" id="newName" placeholder="Agent Full Name" required class="bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
-                                <input type="text" id="newUsername" placeholder="Username" required class="bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
-                                <input type="text" id="newPassword" placeholder="Password" required class="bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
-                                <select id="newTeam" class="bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
+                                <input type="text" id="newName" placeholder="Agent Full Name" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                <input type="text" id="newUsername" placeholder="Username" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                <input type="text" id="newPassword" placeholder="Password" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                <select id="newTeam" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
                                     <option value="Team Nazim">Team Nazim</option>
                                     <option value="Team Abdus Samad">Team Abdus Samad</option>
                                 </select>
-                                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition shadow-sm">Add Agent</button>
+                                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition shadow-sm text-sm">Add Agent</button>
                             </form>
                         </div>
 
-                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">Manage Agents & Individual Targets (BDT)</h3>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm text-slate-700">
-                                    <thead class="bg-slate-200 text-slate-700 uppercase text-xs">
+                                    <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
                                         <tr>
                                             <th class="p-3">Name</th>
                                             <th class="p-3">Username</th>
@@ -253,10 +259,10 @@
                                             <tr>
                                                 <td class="p-3 font-medium text-slate-900">${u.name}</td>
                                                 <td class="p-3 text-slate-600">${u.username}</td>
-                                                <td class="p-3"><span class="bg-slate-200 text-slate-800 px-2 py-1 rounded text-xs font-semibold">${u.team}</span></td>
+                                                <td class="p-3"><span class="bg-slate-100 text-slate-800 px-2 py-1 rounded text-xs font-semibold">${u.team}</span></td>
                                                 <td class="p-3">
                                                     <div class="flex items-center gap-2">
-                                                        <input type="number" id="target_${u.username}" value="${State.targets[u.username] || 50000}" class="bg-white border border-slate-300 rounded px-2 py-1 w-32 text-slate-900">
+                                                        <input type="number" id="target_${u.username}" value="${State.targets[u.username] || 50000}" class="bg-slate-50 border border-slate-300 rounded px-2 py-1 w-32 text-slate-900 text-sm">
                                                         <button onclick="updateAgentTarget('${u.username}')" class="bg-orange-500 hover:bg-orange-600 text-white px-2.5 py-1 rounded text-xs font-semibold">Set</button>
                                                     </div>
                                                 </td>
@@ -274,41 +280,41 @@
 
                     <!-- TAB 3: MANUAL REPORT ENTRY -->
                     <div class="${State.adminTab === 'reports' ? '' : 'hidden'} space-y-6">
-                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">📝 Manual Report Entry (Admin Override)</h3>
                             <form id="adminReportForm" class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
                                 <div>
                                     <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Select Agent</label>
-                                    <select id="adminAgentUsername" required class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
+                                    <select id="adminAgentUsername" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
                                         <option value="">Choose Agent</option>
                                         ${agents.map(a => `<option value="${a.username}">${a.name} (${a.team})</option>`).join('')}
                                     </select>
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Date</label>
-                                    <input type="date" id="adminReportDate" required class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
+                                    <input type="date" id="adminReportDate" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Leads</label>
-                                    <input type="number" id="adminLeads" placeholder="Leads" required class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
+                                    <input type="number" id="adminLeads" placeholder="Leads" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Orders</label>
-                                    <input type="number" id="adminOrders" placeholder="Orders" required class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
+                                    <input type="number" id="adminOrders" placeholder="Orders" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Amount (BDT)</label>
-                                    <input type="number" id="adminAmount" placeholder="Amount" required class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
+                                    <input type="number" id="adminAmount" placeholder="Amount" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
                                 </div>
-                                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition shadow-sm">Add Report</button>
+                                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition shadow-sm text-sm">Add Report</button>
                             </form>
                         </div>
 
-                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">All Submitted Reports</h3>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm text-slate-700">
-                                    <thead class="bg-slate-200 text-slate-700 uppercase text-xs">
+                                    <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
                                         <tr>
                                             <th class="p-3">Date</th>
                                             <th class="p-3">Agent Name</th>
@@ -342,11 +348,11 @@
 
                     <!-- TAB 4: LEADERBOARD -->
                     <div class="${State.adminTab === 'leaderboard' ? '' : 'hidden'} space-y-6">
-                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">🏆 Agent Leaderboard & Rankings</h3>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm text-slate-700">
-                                    <thead class="bg-slate-200 text-slate-700 uppercase text-xs">
+                                    <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
                                         <tr>
                                             <th class="p-3">Rank</th>
                                             <th class="p-3">Name</th>
@@ -545,91 +551,97 @@
             const teamComparison = Object.values(teamsMap).sort((a, b) => b.totalSales - a.totalSales);
 
             return `
-                <nav class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shadow-md">
+                <nav class="bg-slate-900 text-white px-6 py-3 flex justify-between items-center shadow">
                     <div class="flex items-center gap-3">
-                        <span class="bg-orange-500 text-white p-2.5 rounded-xl flex items-center justify-center shadow">
-                            <svg class="w-5 h-5 text-white fill-current" viewBox="0 0 24 24">
-                                <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
-                            </svg>
-                        </span>
-                        <div>
-                            <h2 class="font-bold text-white">${State.currentUser.name}</h2>
-                            <p class="text-xs text-slate-400">${State.currentUser.team}</p>
+                        <div class="bg-orange-500 text-white px-3 py-1.5 rounded font-bold text-sm tracking-wider">
+                            GHORER BAZAR
                         </div>
+                        <span class="text-xs text-slate-400">Agent Portal</span>
                     </div>
-                    <button onclick="logout()" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Logout</button>
+                    <button onclick="logout()" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-3 py-1.5 rounded text-xs font-semibold">Logout</button>
                 </nav>
 
-                <!-- Agent Tabs -->
-                <div class="bg-slate-100 border-b border-slate-200 px-6 flex gap-2 overflow-x-auto">
-                    <button onclick="setAgentTab('overview')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.agentTab === 'overview' ? 'border-orange-500 text-orange-600 bg-white shadow-sm' : 'border-transparent text-slate-600 hover:text-slate-900'}">📈 Month Overview & Submit</button>
-                    <button onclick="setAgentTab('attendance')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.agentTab === 'attendance' ? 'border-orange-500 text-orange-600 bg-white shadow-sm' : 'border-transparent text-slate-600 hover:text-slate-900'}">⏱️ Shift & Attendance</button>
-                    <button onclick="setAgentTab('leaderboard')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.agentTab === 'leaderboard' ? 'border-orange-500 text-orange-600 bg-white shadow-sm' : 'border-transparent text-slate-600 hover:text-slate-900'}">🏆 Team Leaderboard</button>
+                <!-- Agent Tabs Bar -->
+                <div class="bg-white border-b border-slate-200 px-6 flex gap-4 shadow-sm">
+                    <button onclick="setAgentTab('overview')" class="py-3 px-3 font-semibold text-sm border-b-2 transition ${State.agentTab === 'overview' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📈 Month Overview & Submit</button>
+                    <button onclick="setAgentTab('attendance')" class="py-3 px-3 font-semibold text-sm border-b-2 transition ${State.agentTab === 'attendance' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">⏱️ Shift & Attendance</button>
+                    <button onclick="setAgentTab('leaderboard')" class="py-3 px-3 font-semibold text-sm border-b-2 transition ${State.agentTab === 'leaderboard' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">🏆 Team Leaderboard</button>
                 </div>
 
                 <div class="flex-grow p-6 max-w-5xl mx-auto w-full space-y-6">
                     
                     <!-- AGENT TAB 1: OVERVIEW & SUBMIT -->
                     <div class="${State.agentTab === 'overview' ? '' : 'hidden'} space-y-6">
+                        <!-- ERP Style Greeting Banner -->
+                        <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-md flex justify-between items-center">
+                            <div>
+                                <h2 class="text-xl font-bold">Welcome, ${State.currentUser.name}!</h2>
+                                <p class="text-xs text-slate-400 mt-1">Team: ${State.currentUser.team}</p>
+                            </div>
+                            <div class="bg-slate-800 px-4 py-2 rounded-xl text-xs text-slate-300">
+                                📅 Month Performance
+                            </div>
+                        </div>
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="bg-slate-50 border border-slate-200 p-6 rounded-xl shadow-sm">
+                            <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm border-l-4 border-l-slate-700">
                                 <p class="text-slate-500 text-xs uppercase font-semibold">Your Month Target Amount</p>
                                 <h3 class="text-3xl font-bold text-slate-900 mt-1">৳${myTarget.toLocaleString()}</h3>
                             </div>
-                            <div class="bg-slate-50 border border-slate-200 p-6 rounded-xl shadow-sm">
+                            <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm border-l-4 border-l-orange-500">
                                 <p class="text-slate-500 text-xs uppercase font-semibold">Total Month Sales Achieved</p>
                                 <h3 class="text-3xl font-bold text-orange-500 mt-1">৳${totalSales.toLocaleString()} (${achievementRate}%)</h3>
                             </div>
                         </div>
 
-                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">Submit Daily Sales Report</h3>
                             <form id="reportForm" class="space-y-4">
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
                                         <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Total Leads</label>
-                                        <input type="number" id="leads" required class="w-full bg-white border border-slate-300 rounded-lg px-4 py-2 text-slate-900">
+                                        <input type="number" id="leads" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2 text-slate-900 text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Total Orders</label>
-                                        <input type="number" id="orders" required class="w-full bg-white border border-slate-300 rounded-lg px-4 py-2 text-slate-900">
+                                        <input type="number" id="orders" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2 text-slate-900 text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Sales Amount (BDT)</label>
-                                        <input type="number" id="amount" required class="w-full bg-white border border-slate-300 rounded-lg px-4 py-2 text-slate-900" placeholder="e.g. 5000">
+                                        <input type="number" id="amount" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2 text-slate-900 text-sm" placeholder="e.g. 5000">
                                     </div>
                                 </div>
-                                <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition shadow-md">Submit Report</button>
+                                <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition shadow-md text-sm">Submit Report</button>
                             </form>
                         </div>
                     </div>
 
                     <!-- AGENT TAB 2: ATTENDANCE -->
                     <div class="${State.agentTab === 'attendance' ? '' : 'hidden'} space-y-6">
-                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 text-center space-y-4 shadow-sm">
+                        <div class="bg-white border border-slate-200 rounded-xl p-8 text-center space-y-4 shadow-sm">
                             <h3 class="text-xl font-bold text-slate-900">Shift & Attendance Portal</h3>
                             <div class="flex justify-center gap-4">
                                 ${!activeAttendance ? `
-                                    <button onclick="startShift()" class="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-lg shadow-md transition">Start Shift</button>
+                                    <button onclick="startShift()" class="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-lg shadow-md transition text-sm">Start Shift</button>
                                 ` : `
-                                    <button onclick="endShift()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3 rounded-lg shadow-md transition">End Shift</button>
-                                    <button onclick="toggleBreak()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-3 rounded-lg shadow-md transition">${activeAttendance.onBreak ? 'Resume Work' : 'Take Break'}</button>
+                                    <button onclick="endShift()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3 rounded-lg shadow-md transition text-sm">End Shift</button>
+                                    <button onclick="toggleBreak()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-3 rounded-lg shadow-md transition text-sm">${activeAttendance.onBreak ? 'Resume Work' : 'Take Break'}</button>
                                 `}
                             </div>
                             <p class="text-sm text-slate-500">Status: <span class="font-semibold ${activeAttendance ? 'text-orange-500' : 'text-slate-400'}">${activeAttendance ? (activeAttendance.onBreak ? 'On Break' : 'Active Duty') : 'Offline'}</span></p>
                         </div>
                     </div>
 
-                    <!-- AGENT TAB 3: LEADERBOARD & TEAM COMPARISON -->
+                    <!-- AGENT TAB 3: LEADERBOARD -->
                     <div class="${State.agentTab === 'leaderboard' ? '' : 'hidden'} space-y-6">
-                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">📊 Team Comparison</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 ${teamComparison.map(t => `
-                                    <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+                                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl shadow-sm">
                                         <div class="flex justify-between items-center mb-2">
                                             <h4 class="font-bold text-slate-900">${t.teamName}</h4>
-                                            <span class="text-xs bg-orange-100 text-orange-600 px-2.5 py-1 rounded-full font-semibold">${t.agentsCount} Agents</span>
+                                            <span class="text-xs bg-orange-100 text-orange-600 px-2.5 py-0.5 rounded-full font-semibold">${t.agentsCount} Agents</span>
                                         </div>
                                         <p class="text-sm text-slate-500">Sales: <span class="font-bold text-orange-600">৳${t.totalSales.toLocaleString()}</span> / Target: ৳${t.totalTarget.toLocaleString()}</p>
                                     </div>
@@ -637,11 +649,11 @@
                             </div>
                         </div>
 
-                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">🏆 Agent Leaderboard & Ranking</h3>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm text-slate-700">
-                                    <thead class="bg-slate-200 text-slate-700 uppercase text-xs">
+                                    <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
                                         <tr>
                                             <th class="p-3">Rank</th>
                                             <th class="p-3">Agent Name</th>
