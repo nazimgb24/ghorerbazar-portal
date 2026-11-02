@@ -15,7 +15,7 @@
     <div id="app" class="flex-grow flex flex-col"></div>
 
     <script>
-        let savedUsers = JSON.parse(localStorage.getItem('gb_portal_users_v11'));
+        let savedUsers = JSON.parse(localStorage.getItem('gb_portal_users_v12'));
         if (!savedUsers || !Array.isArray(savedUsers) || savedUsers.length === 0) {
             savedUsers = [
                 { id: 1, name: 'Md. Nazimur Rahman', username: '10122', password: 'admin123', role: 'admin', team: 'Team Nazim', active: true },
@@ -43,7 +43,7 @@
             ];
         }
 
-        let defaultRoster = JSON.parse(localStorage.getItem('gb_portal_roster_v11')) || {
+        let defaultRoster = JSON.parse(localStorage.getItem('gb_portal_roster_v12')) || {
             'Team Abdus Samad': [
                 { id: '10107', name: 'Md Abdus Samad (TL)', sat: '10:00 AM', sun: 'DO', mon: '7:00 AM', tue: '7:00 AM', wed: '7:00 AM', thu: '7:00 AM', fri: '3:00 PM' },
                 { id: '10098', name: 'Habibur Rahman Shuvo', sat: '3:00 PM', sun: 'Night', mon: 'DO', tue: '3:00 PM', wed: '7:00 AM', thu: '7:00 AM', fri: '7:00 AM' },
@@ -69,11 +69,11 @@
         };
 
         const State = {
-            currentUser: JSON.parse(localStorage.getItem('gb_portal_current_user_v11')) || null,
+            currentUser: JSON.parse(localStorage.getItem('gb_portal_current_user_v12')) || null,
             users: savedUsers,
-            attendance: JSON.parse(localStorage.getItem('gb_portal_attendance_v11')) || [],
-            reports: JSON.parse(localStorage.getItem('gb_portal_reports_v11')) || [],
-            targets: JSON.parse(localStorage.getItem('gb_portal_targets_v11')) || {},
+            attendance: JSON.parse(localStorage.getItem('gb_portal_attendance_v12')) || [],
+            reports: JSON.parse(localStorage.getItem('gb_portal_reports_v12')) || [],
+            targets: JSON.parse(localStorage.getItem('gb_portal_targets_v12')) || {},
             roster: defaultRoster,
             adminTab: 'overview',
             adminViewMode: 'month',
@@ -82,13 +82,21 @@
         };
 
         function saveState() {
-            localStorage.setItem('gb_portal_current_user_v11', JSON.stringify(State.currentUser));
-            localStorage.setItem('gb_portal_users_v11', JSON.stringify(State.users));
-            localStorage.setItem('gb_portal_attendance_v11', JSON.stringify(State.attendance));
-            localStorage.setItem('gb_portal_reports_v11', JSON.stringify(State.reports));
-            localStorage.setItem('gb_portal_targets_v11', JSON.stringify(State.targets));
-            localStorage.setItem('gb_portal_roster_v11', JSON.stringify(State.roster));
+            localStorage.setItem('gb_portal_current_user_v12', JSON.stringify(State.currentUser));
+            localStorage.setItem('gb_portal_users_v12', JSON.stringify(State.users));
+            localStorage.setItem('gb_portal_attendance_v12', JSON.stringify(State.attendance));
+            localStorage.setItem('gb_portal_reports_v12', JSON.stringify(State.reports));
+            localStorage.setItem('gb_portal_targets_v12', JSON.stringify(State.targets));
+            localStorage.setItem('gb_portal_roster_v12', JSON.stringify(State.roster));
         }
+
+        // Live Clock Timer loop
+        setInterval(() => {
+            const clockEl = document.getElementById('liveClock');
+            if (clockEl) {
+                clockEl.textContent = new Date().toLocaleTimeString();
+            }
+        }, 1000);
 
         function render() {
             const app = document.getElementById('app');
@@ -185,7 +193,7 @@
             for (const [teamName, members] of Object.entries(State.roster)) {
                 html += `
                     <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
-                        <h3 class="text-base font-bold text-slate-900 border-b pb-2">Team: Facebook (${teamName.replace('Team ', '')})[cite: 14, 15]</h3>
+                        <h3 class="text-base font-bold text-slate-900 border-b pb-2">Team: Facebook (${teamName.replace('Team ', '')})</h3>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs text-slate-700 border-collapse border border-slate-200">
                                 <thead class="bg-slate-100 text-slate-700 uppercase">
@@ -371,7 +379,10 @@
                         </div>
                         <span class="text-xs text-slate-400">${isSupervisor ? 'Supervisor View Portal (Read-Only)' : 'Admin Control Center'}</span>
                     </div>
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-slate-800 px-3 py-1 rounded-lg text-xs font-mono text-orange-400 border border-slate-700">
+                            🕒 <span id="liveClock">${new Date().toLocaleTimeString()}</span>
+                        </div>
                         ${!isSupervisor ? `
                             <button onclick="exportData()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-lg text-xs font-semibold border border-slate-700 transition">📥 Backup</button>
                             <label class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-lg text-xs font-semibold border border-slate-700 cursor-pointer transition">
@@ -387,7 +398,7 @@
                     <button onclick="setAdminTab('agents')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'agents' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">👥 Agent Management</button>
                     <button onclick="setAdminTab('attendance')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'attendance' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">⏱️ Attendance & Breaks</button>
                     <button onclick="setAdminTab('roster')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'roster' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📅 Duty Roster</button>
-                    ${!isSupervisor ? `<button onclick="setAdminTab('reports')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'reports' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📝 Manual Report Entry</button>` : ''}
+                    <button onclick="setAdminTab('reports')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'reports' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📝 Manual Report Entry</button>
                     <button onclick="setAdminTab('leaderboard')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'leaderboard' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">🏆 Leaderboard</button>
                 </div>
 
@@ -496,7 +507,7 @@
                                                         <td class="p-3">
                                                             ${!isSupervisor ? `
                                                                 <div class="flex items-center gap-2">
-                                                                    <input type="number" id="target_${u.username}" value="${uTarget}" class="bg-slate-50 border border-slate-300 rounded px-2 py-1 w-28 text-slate-900 text-sm">
+                                                                    <input type="number" id="target_${u.username}" value="${uTarget}" class="bg-slate-50 border border-slate-300 rounded px-2 py-1 w-32 text-slate-900 text-sm font-semibold">
                                                                     <button onclick="updateAgentTarget('${u.username}')" class="bg-orange-500 hover:bg-orange-600 text-white px-2.5 py-1 rounded text-xs font-semibold">Set</button>
                                                                 </div>
                                                             ` : `
@@ -576,8 +587,8 @@
                         </div>
                     </div>
 
-                    ${!isSupervisor ? `
-                        <div class="${State.adminTab === 'reports' ? '' : 'hidden'} space-y-6">
+                    <div class="${State.adminTab === 'reports' ? '' : 'hidden'} space-y-6">
+                        ${!isSupervisor ? `
                             <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                                 <h3 class="text-lg font-bold text-slate-900 mb-4">📝 Manual Report Entry (Admin Override)</h3>
                                 <form id="adminReportForm" class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
@@ -607,49 +618,49 @@
                                     <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition shadow-sm text-sm">Add Report</button>
                                 </form>
                             </div>
+                        ` : ''}
 
-                            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                                <h3 class="text-lg font-bold text-slate-900 mb-4">All Submitted Reports</h3>
-                                <div class="overflow-x-auto">
-                                    <table class="w-full text-left text-sm text-slate-700">
-                                        <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
-                                            <tr>
-                                                <th class="p-3">Date</th>
-                                                <th class="p-3">Agent Name</th>
-                                                <th class="p-3">Team</th>
-                                                <th class="p-3">Leads</th>
-                                                <th class="p-3">Orders</th>
-                                                <th class="p-3">Conversion</th>
-                                                <th class="p-3">Amount (BDT)</th>
-                                                <th class="p-3">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-slate-200">
-                                            ${State.reports.length === 0 ? `<tr><td colspan="8" class="p-4 text-center text-slate-400">No reports submitted yet.</td></tr>` :
-                                            State.reports.map((r, idx) => {
-                                                const rConv = r.leads > 0 ? ((r.orders / r.leads) * 100).toFixed(1) : 0;
-                                                return `
-                                                    <tr>
-                                                        <td class="p-3">${r.date}</td>
-                                                        <td class="p-3 font-medium text-slate-900">${r.name}</td>
-                                                        <td class="p-3 text-slate-500">${r.team}</td>
-                                                        <td class="p-3">${r.leads}</td>
-                                                        <td class="p-3">${r.orders}</td>
-                                                        <td class="p-3 text-blue-600 font-semibold">${rConv}%</td>
-                                                        <td class="p-3 font-semibold text-orange-600">৳${(r.amount || 0).toLocaleString()}</td>
-                                                        <td class="p-3 flex gap-2">
-                                                            <button onclick="editReportPrompt(${idx})" class="text-blue-600 hover:text-blue-800 text-xs font-semibold">Edit</button>
-                                                            <button onclick="deleteReport(${idx})" class="text-red-500 hover:text-red-700 text-xs font-semibold">Delete</button>
-                                                        </td>
-                                                    </tr>
-                                                `;
-                                            }).join('')}
-                                        </tbody>
-                                    </table>
-                                </div>
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">All Submitted Reports (Demo & Active Data Management)</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm text-slate-700">
+                                    <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
+                                        <tr>
+                                            <th class="p-3">Date</th>
+                                            <th class="p-3">Agent Name</th>
+                                            <th class="p-3">Team</th>
+                                            <th class="p-3">Leads</th>
+                                            <th class="p-3">Orders</th>
+                                            <th class="p-3">Conversion</th>
+                                            <th class="p-3">Amount (BDT)</th>
+                                            <th class="p-3">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-200">
+                                        ${State.reports.length === 0 ? `<tr><td colspan="8" class="p-4 text-center text-slate-400">No reports submitted yet.</td></tr>` :
+                                        State.reports.map((r, idx) => {
+                                            const rConv = r.leads > 0 ? ((r.orders / r.leads) * 100).toFixed(1) : 0;
+                                            return `
+                                                <tr>
+                                                    <td class="p-3">${r.date}</td>
+                                                    <td class="p-3 font-medium text-slate-900">${r.name}</td>
+                                                    <td class="p-3 text-slate-500">${r.team}</td>
+                                                    <td class="p-3">${r.leads}</td>
+                                                    <td class="p-3">${r.orders}</td>
+                                                    <td class="p-3 text-blue-600 font-semibold">${rConv}%</td>
+                                                    <td class="p-3 font-semibold text-orange-600">৳${(r.amount || 0).toLocaleString()}</td>
+                                                    <td class="p-3 flex gap-2">
+                                                        <button onclick="editReportPrompt(${idx})" class="text-blue-600 hover:text-blue-800 text-xs font-semibold bg-blue-50 px-2 py-1 rounded">Edit</button>
+                                                        <button onclick="deleteReport(${idx})" class="text-red-500 hover:text-red-700 text-xs font-semibold bg-red-50 px-2 py-1 rounded">Delete</button>
+                                                    </td>
+                                                </tr>
+                                            `;
+                                        }).join('')}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                    ` : ''}
+                    </div>
 
                     <div class="${State.adminTab === 'leaderboard' ? '' : 'hidden'} space-y-6">
                         <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
@@ -847,7 +858,7 @@
             const val = parseFloat(document.getElementById(`target_${username}`).value) || 0;
             State.targets[username] = val;
             saveState();
-            alert('Target updated successfully!');
+            alert('Target updated successfully for ' + username + '!');
             render();
         }
 
@@ -877,7 +888,6 @@
         }
 
         window.deleteReport = function(index) {
-            if (State.currentUser.role === 'supervisor') return;
             if (confirm('Are you sure you want to delete this report?')) {
                 State.reports.splice(index, 1);
                 saveState();
@@ -886,7 +896,6 @@
         }
 
         window.editReportPrompt = function(index) {
-            if (State.currentUser.role === 'supervisor') return;
             const r = State.reports[index];
             if (!r) return;
             const newLeads = prompt('Edit Leads:', r.leads);
@@ -961,7 +970,12 @@
                         </div>
                         <span class="text-xs text-slate-400">Agent Portal</span>
                     </div>
-                    <button onclick="logout()" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold transition">Logout & End Shift</button>
+                    <div class="flex items-center gap-4">
+                        <div class="bg-slate-800 px-3 py-1 rounded-lg text-xs font-mono text-orange-400 border border-slate-700">
+                            🕒 <span id="liveClock">${new Date().toLocaleTimeString()}</span>
+                        </div>
+                        <button onclick="logout()" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold transition">Logout & End Shift</button>
+                    </div>
                 </nav>
 
                 <div class="bg-white border-b border-slate-200 px-6 flex gap-2 overflow-x-auto shadow-sm">
