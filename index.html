@@ -15,80 +15,97 @@
     <div id="app" class="flex-grow flex flex-col"></div>
 
     <script>
-        let savedUsers = JSON.parse(localStorage.getItem('gb_portal_users_v12'));
-        if (!savedUsers || !Array.isArray(savedUsers) || savedUsers.length === 0) {
-            savedUsers = [
-                { id: 1, name: 'Md. Nazimur Rahman', username: '10122', password: 'admin123', role: 'admin', team: 'Team Nazim', active: true },
-                { id: 2, name: 'Md Abdus Samad', username: '10107', password: 'admin123', role: 'admin', team: 'Team Abdus Samad', active: true },
-                { id: 3, name: 'Admin Master', username: 'admin', password: 'admin123', role: 'admin', team: 'Management', active: true },
-                { id: 4, name: 'Supervisor View', username: 'supervisor', password: 'super123', role: 'supervisor', team: 'Management', active: true },
-                
-                { id: 5, name: 'Habibur Rahman Shuvo', username: '10098', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
-                { id: 6, name: 'Al-Amin Kazi', username: '10136', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
-                { id: 7, name: 'Zubayer Al Mahmud', username: '11007', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
-                { id: 8, name: 'Md. Mehedi Amin', username: '11101', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
-                { id: 9, name: 'Abu Sayed', username: '11120', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
-                { id: 10, name: 'Rabbir Hossain Molla', username: '11130', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
-                { id: 11, name: 'Abdullah Al Soad', username: '10806', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
-                { id: 12, name: 'Al-Amin', username: '10128', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
-                
-                { id: 13, name: 'Shagor Ahmed', username: '10191', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
-                { id: 14, name: 'Abdullah Dipu', username: '10289', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
-                { id: 15, name: 'Hasibul Islam Eraz', username: '11044', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
-                { id: 16, name: 'Kamruzzaman Shujon', username: '10741', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
-                { id: 17, name: 'Md. Abdullah Mahmud', username: '10803', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
-                { id: 18, name: 'Md. Ashiqur Rahman', username: '11042', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
-                { id: 19, name: 'Sheikh MD Rayhan', username: '10328', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
-                { id: 20, name: 'Ranju Ahmed', username: '10135', password: '12345678', role: 'agent', team: 'Team Nazim', active: true }
-            ];
+        // Centralized Storage Keys with auto-sync listener
+        function getGlobalState() {
+            let users = JSON.parse(localStorage.getItem('gb_global_users_v13'));
+            if (!users || !Array.isArray(users) || users.length === 0) {
+                users = [
+                    { id: 1, name: 'Md. Nazimur Rahman', username: '10122', password: 'admin123', role: 'admin', team: 'Team Nazim', active: true },
+                    { id: 2, name: 'Md Abdus Samad', username: '10107', password: 'admin123', role: 'admin', team: 'Team Abdus Samad', active: true },
+                    { id: 3, name: 'Admin Master', username: 'admin', password: 'admin123', role: 'admin', team: 'Management', active: true },
+                    { id: 4, name: 'Supervisor View', username: 'supervisor', password: 'super123', role: 'supervisor', team: 'Management', active: true },
+                    
+                    { id: 5, name: 'Habibur Rahman Shuvo', username: '10098', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                    { id: 6, name: 'Al-Amin Kazi', username: '10136', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                    { id: 7, name: 'Zubayer Al Mahmud', username: '11007', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                    { id: 8, name: 'Md. Mehedi Amin', username: '11101', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                    { id: 9, name: 'Abu Sayed', username: '11120', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                    { id: 10, name: 'Rabbir Hossain Molla', username: '11130', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                    { id: 11, name: 'Abdullah Al Soad', username: '10806', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                    { id: 12, name: 'Al-Amin', username: '10128', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
+                    
+                    { id: 13, name: 'Shagor Ahmed', username: '10191', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                    { id: 14, name: 'Abdullah Dipu', username: '10289', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                    { id: 15, name: 'Hasibul Islam Eraz', username: '11044', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                    { id: 16, name: 'Kamruzzaman Shujon', username: '10741', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                    { id: 17, name: 'Md. Abdullah Mahmud', username: '10803', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                    { id: 18, name: 'Md. Ashiqur Rahman', username: '11042', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                    { id: 19, name: 'Sheikh MD Rayhan', username: '10328', password: '12345678', role: 'agent', team: 'Team Nazim', active: true },
+                    { id: 20, name: 'Ranju Ahmed', username: '10135', password: '12345678', role: 'agent', team: 'Team Nazim', active: true }
+                ];
+            }
+
+            let roster = JSON.parse(localStorage.getItem('gb_global_roster_v13')) || {
+                'Team Abdus Samad': [
+                    { id: '10107', name: 'Md Abdus Samad (TL)', sat: '10:00 AM', sun: 'DO', mon: '7:00 AM', tue: '7:00 AM', wed: '7:00 AM', thu: '7:00 AM', fri: '3:00 PM' },
+                    { id: '10098', name: 'Habibur Rahman Shuvo', sat: '3:00 PM', sun: 'Night', mon: 'DO', tue: '3:00 PM', wed: '7:00 AM', thu: '7:00 AM', fri: '7:00 AM' },
+                    { id: '10136', name: 'Al-Amin Kazi', sat: '10:00 AM', sun: '10:00 AM', mon: '10:00 AM', tue: '10:00 AM', wed: '10:00 AM', thu: '10:00 AM', fri: 'DO' },
+                    { id: '11007', name: 'Zubayer Al Mahmud', sat: 'DO', sun: '3:00 PM', mon: '3:00 PM', tue: '3:00 PM', wed: '3:00 PM', thu: '3:00 PM', fri: 'Night' },
+                    { id: '11101', name: 'Md. Mehedi Amin', sat: '7:00 AM', sun: '7:00 AM', mon: '3:00 PM', tue: 'Night', wed: 'DO', thu: '3:00 PM', fri: '3:00 PM' },
+                    { id: '11120', name: 'Abu Sayed', sat: '3:00 PM', sun: '3:00 PM', mon: 'Night', tue: 'DO', wed: '3:00 PM', thu: '3:00 PM', fri: '3:00 PM' },
+                    { id: '11130', name: 'Rabbir Hossain Molla', sat: '3:00 PM', sun: '3:00 PM', mon: '7:00 AM', tue: '7:00 AM', wed: 'Night', thu: 'DO', fri: '10:00 AM' },
+                    { id: '10806', name: 'Abdullah Al Soad', sat: 'Night', sun: 'DO', mon: '3:00 PM', tue: '3:00 PM', wed: '3:00 PM', thu: '3:00 PM', fri: '3:00 PM' },
+                    { id: '10128', name: 'Al-Amin', sat: '7:00 AM', sun: 'DO', mon: '3:00 PM', tue: '3:00 PM', wed: '3:00 PM', thu: '3:00 PM', fri: '3:00 PM' }
+                ],
+                'Team Nazim': [
+                    { id: '10122', name: 'Md. Nazimur Rahman (TL)', sat: 'DO', sun: '10:00 AM', mon: '3:00 PM', tue: '3:00 PM', wed: '3:00 PM', thu: '3:00 PM', fri: '7:00 AM' },
+                    { id: '10191', name: 'Shagor Ahmed', sat: '3:00 PM', sun: '3:00 PM', mon: '3:00 PM', tue: '3:00 PM', wed: 'Night', thu: 'DO', fri: '3:00 PM' },
+                    { id: '10289', name: 'Abdullah Dipu', sat: 'Night', sun: 'DO', mon: '3:00 PM', tue: '3:00 PM', wed: '3:00 PM', thu: '7:00 AM', fri: '7:00 AM' },
+                    { id: '11044', name: 'Hasibul Islam Eraz', sat: '3:00 PM', sun: '3:00 PM', mon: '3:00 PM', tue: '7:00 AM', wed: '7:00 AM', thu: 'Night', fri: 'DO' },
+                    { id: '10741', name: 'Kamruzzaman Shujon', sat: '3:00 PM', sun: '7:00 AM', mon: '7:00 AM', tue: 'Night', wed: 'DO', thu: '3:00 PM', fri: '3:00 PM' },
+                    { id: '10803', name: 'Md. Abdullah Mahmud', sat: '7:00 AM', sun: '7:00 AM', mon: 'Night', tue: 'DO', wed: '7:00 AM', thu: '7:00 AM', fri: '3:00 PM' },
+                    { id: '11042', name: 'Md. Ashiqur Rahman', sat: 'DO', sun: '3:00 PM', mon: '7:00 AM', tue: '7:00 AM', wed: '3:00 PM', thu: '3:00 PM', fri: 'Night' },
+                    { id: '10328', name: 'Sheikh MD Rayhan', sat: '7:00 AM', sun: 'Night', mon: 'DO', tue: '3:00 PM', wed: '3:00 PM', thu: '3:00 PM', fri: '7:00 AM' },
+                    { id: '10135', name: 'Ranju Ahmed', sat: '3:00 PM', sun: '7:00 AM', mon: '7:00 AM', tue: '7:00 AM', wed: '3:00 PM', thu: 'Night', fri: 'DO' }
+                ]
+            };
+
+            return {
+                currentUser: JSON.parse(localStorage.getItem('gb_global_current_user_v13')) || null,
+                users: users,
+                attendance: JSON.parse(localStorage.getItem('gb_global_attendance_v13')) || [],
+                reports: JSON.parse(localStorage.getItem('gb_global_reports_v13')) || [],
+                targets: JSON.parse(localStorage.getItem('gb_global_targets_v13')) || {},
+                roster: roster,
+                adminTab: localStorage.getItem('gb_admin_tab_v13') || 'overview',
+                adminViewMode: localStorage.getItem('gb_admin_view_v13') || 'month',
+                selectedAgentDetails: localStorage.getItem('gb_selected_agent_v13') || null,
+                agentTab: localStorage.getItem('gb_agent_tab_v13') || 'overview'
+            };
         }
 
-        let defaultRoster = JSON.parse(localStorage.getItem('gb_portal_roster_v12')) || {
-            'Team Abdus Samad': [
-                { id: '10107', name: 'Md Abdus Samad (TL)', sat: '10:00 AM', sun: 'DO', mon: '7:00 AM', tue: '7:00 AM', wed: '7:00 AM', thu: '7:00 AM', fri: '3:00 PM' },
-                { id: '10098', name: 'Habibur Rahman Shuvo', sat: '3:00 PM', sun: 'Night', mon: 'DO', tue: '3:00 PM', wed: '7:00 AM', thu: '7:00 AM', fri: '7:00 AM' },
-                { id: '10136', name: 'Al-Amin Kazi', sat: '10:00 AM', sun: '10:00 AM', mon: '10:00 AM', tue: '10:00 AM', wed: '10:00 AM', thu: '10:00 AM', fri: 'DO' },
-                { id: '11007', name: 'Zubayer Al Mahmud', sat: 'DO', sun: '3:00 PM', mon: '3:00 PM', tue: '3:00 PM', wed: '3:00 PM', thu: '3:00 PM', fri: 'Night' },
-                { id: '11101', name: 'Md. Mehedi Amin', sat: '7:00 AM', sun: '7:00 AM', mon: '3:00 PM', tue: 'Night', wed: 'DO', thu: '3:00 PM', fri: '3:00 PM' },
-                { id: '11120', name: 'Abu Sayed', sat: '3:00 PM', sun: '3:00 PM', mon: 'Night', tue: 'DO', wed: '3:00 PM', thu: '3:00 PM', fri: '3:00 PM' },
-                { id: '11130', name: 'Rabbir Hossain Molla', sat: '3:00 PM', sun: '3:00 PM', mon: '7:00 AM', tue: '7:00 AM', wed: 'Night', thu: 'DO', fri: '10:00 AM' },
-                { id: '10806', name: 'Abdullah Al Soad', sat: 'Night', sun: 'DO', mon: '3:00 PM', tue: '3:00 PM', wed: '3:00 PM', thu: '3:00 PM', fri: '3:00 PM' },
-                { id: '10128', name: 'Al-Amin', sat: '7:00 AM', sun: 'DO', mon: '3:00 PM', tue: '3:00 PM', wed: '3:00 PM', thu: '3:00 PM', fri: '3:00 PM' }
-            ],
-            'Team Nazim': [
-                { id: '10122', name: 'Md. Nazimur Rahman (TL)', sat: 'DO', sun: '10:00 AM', mon: '3:00 PM', tue: '3:00 PM', wed: '3:00 PM', thu: '3:00 PM', fri: '7:00 AM' },
-                { id: '10191', name: 'Shagor Ahmed', sat: '3:00 PM', sun: '3:00 PM', mon: '3:00 PM', tue: '3:00 PM', wed: 'Night', thu: 'DO', fri: '3:00 PM' },
-                { id: '10289', name: 'Abdullah Dipu', sat: 'Night', sun: 'DO', mon: '3:00 PM', tue: '3:00 PM', wed: '3:00 PM', thu: '7:00 AM', fri: '7:00 AM' },
-                { id: '11044', name: 'Hasibul Islam Eraz', sat: '3:00 PM', sun: '3:00 PM', mon: '3:00 PM', tue: '7:00 AM', wed: '7:00 AM', thu: 'Night', fri: 'DO' },
-                { id: '10741', name: 'Kamruzzaman Shujon', sat: '3:00 PM', sun: '7:00 AM', mon: '7:00 AM', tue: 'Night', wed: 'DO', thu: '3:00 PM', fri: '3:00 PM' },
-                { id: '10803', name: 'Md. Abdullah Mahmud', sat: '7:00 AM', sun: '7:00 AM', mon: 'Night', tue: 'DO', wed: '7:00 AM', thu: '7:00 AM', fri: '3:00 PM' },
-                { id: '11042', name: 'Md. Ashiqur Rahman', sat: 'DO', sun: '3:00 PM', mon: '7:00 AM', tue: '7:00 AM', wed: '3:00 PM', thu: '3:00 PM', fri: 'Night' },
-                { id: '10328', name: 'Sheikh MD Rayhan', sat: '7:00 AM', sun: 'Night', mon: 'DO', tue: '3:00 PM', wed: '3:00 PM', thu: '3:00 PM', fri: '7:00 AM' },
-                { id: '10135', name: 'Ranju Ahmed', sat: '3:00 PM', sun: '7:00 AM', mon: '7:00 AM', tue: '7:00 AM', wed: '3:00 PM', thu: 'Night', fri: 'DO' }
-            ]
-        };
-
-        const State = {
-            currentUser: JSON.parse(localStorage.getItem('gb_portal_current_user_v12')) || null,
-            users: savedUsers,
-            attendance: JSON.parse(localStorage.getItem('gb_portal_attendance_v12')) || [],
-            reports: JSON.parse(localStorage.getItem('gb_portal_reports_v12')) || [],
-            targets: JSON.parse(localStorage.getItem('gb_portal_targets_v12')) || {},
-            roster: defaultRoster,
-            adminTab: 'overview',
-            adminViewMode: 'month',
-            selectedAgentDetails: null,
-            agentTab: 'overview'
-        };
+        const State = getGlobalState();
 
         function saveState() {
-            localStorage.setItem('gb_portal_current_user_v12', JSON.stringify(State.currentUser));
-            localStorage.setItem('gb_portal_users_v12', JSON.stringify(State.users));
-            localStorage.setItem('gb_portal_attendance_v12', JSON.stringify(State.attendance));
-            localStorage.setItem('gb_portal_reports_v12', JSON.stringify(State.reports));
-            localStorage.setItem('gb_portal_targets_v12', JSON.stringify(State.targets));
-            localStorage.setItem('gb_portal_roster_v12', JSON.stringify(State.roster));
+            localStorage.setItem('gb_global_current_user_v13', JSON.stringify(State.currentUser));
+            localStorage.setItem('gb_global_users_v13', JSON.stringify(State.users));
+            localStorage.setItem('gb_global_attendance_v13', JSON.stringify(State.attendance));
+            localStorage.setItem('gb_global_reports_v13', JSON.stringify(State.reports));
+            localStorage.setItem('gb_global_targets_v13', JSON.stringify(State.targets));
+            localStorage.setItem('gb_global_roster_v13', JSON.stringify(State.roster));
+            localStorage.setItem('gb_admin_tab_v13', State.adminTab);
+            localStorage.setItem('gb_admin_view_v13', State.adminViewMode);
+            localStorage.setItem('gb_selected_agent_v13', State.selectedAgentDetails || '');
+            localStorage.setItem('gb_agent_tab_v13', State.agentTab);
         }
+
+        // Real-time Storage Sync across tabs/users instantly
+        window.addEventListener('storage', (e) => {
+            if (e.key && e.key.startsWith('gb_global_')) {
+                Object.assign(State, getGlobalState());
+                render();
+            }
+        });
 
         // Live Clock Timer loop
         setInterval(() => {
@@ -99,6 +116,9 @@
         }, 1000);
 
         function render() {
+            const currentFresh = getGlobalState();
+            Object.assign(State, currentFresh);
+
             const app = document.getElementById('app');
             app.innerHTML = '';
 
@@ -732,21 +752,25 @@
         window.setAdminTab = function(tabName) {
             State.adminTab = tabName;
             State.selectedAgentDetails = null;
+            saveState();
             render();
         }
 
         window.setAdminViewMode = function(mode) {
             State.adminViewMode = mode;
+            saveState();
             render();
         }
 
         window.viewAgentDetails = function(username) {
             State.selectedAgentDetails = username;
+            saveState();
             render();
         }
 
         window.closeAgentDetails = function() {
             State.selectedAgentDetails = null;
+            saveState();
             render();
         }
 
@@ -858,7 +882,7 @@
             const val = parseFloat(document.getElementById(`target_${username}`).value) || 0;
             State.targets[username] = val;
             saveState();
-            alert('Target updated successfully for ' + username + '!');
+            alert('Target updated successfully to ৳' + val.toLocaleString() + ' and synced globally!');
             render();
         }
 
@@ -1143,6 +1167,7 @@
 
         window.setAgentTab = function(tabName) {
             State.agentTab = tabName;
+            saveState();
             render();
         }
 
@@ -1187,7 +1212,7 @@
                         date: new Date().toLocaleDateString()
                     });
                     saveState();
-                    alert('Report submitted successfully!');
+                    alert('Report submitted successfully and synced globally!');
                     render();
                 });
             }
