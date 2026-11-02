@@ -15,7 +15,7 @@
     <div id="app" class="flex-grow flex flex-col"></div>
 
     <script>
-        let savedUsers = JSON.parse(localStorage.getItem('gb_portal_users_v5'));
+        let savedUsers = JSON.parse(localStorage.getItem('gb_portal_users_v6'));
         if (!savedUsers || !Array.isArray(savedUsers) || savedUsers.length === 0) {
             savedUsers = [
                 { id: 1, name: 'Md. Nazimur Rahman', username: '10122', password: 'admin123', role: 'admin', team: 'Team Nazim', active: true },
@@ -43,22 +43,22 @@
         }
 
         const State = {
-            currentUser: JSON.parse(localStorage.getItem('gb_portal_current_user_v5')) || null,
+            currentUser: JSON.parse(localStorage.getItem('gb_portal_current_user_v6')) || null,
             users: savedUsers,
-            attendance: JSON.parse(localStorage.getItem('gb_portal_attendance_v5')) || [],
-            reports: JSON.parse(localStorage.getItem('gb_portal_reports_v5')) || [],
-            targets: JSON.parse(localStorage.getItem('gb_portal_targets_v5')) || {},
+            attendance: JSON.parse(localStorage.getItem('gb_portal_attendance_v6')) || [],
+            reports: JSON.parse(localStorage.getItem('gb_portal_reports_v6')) || [],
+            targets: JSON.parse(localStorage.getItem('gb_portal_targets_v6')) || {},
             adminTab: 'overview',
             adminViewMode: 'month',
             agentTab: 'overview'
         };
 
         function saveState() {
-            localStorage.setItem('gb_portal_current_user_v5', JSON.stringify(State.currentUser));
-            localStorage.setItem('gb_portal_users_v5', JSON.stringify(State.users));
-            localStorage.setItem('gb_portal_attendance_v5', JSON.stringify(State.attendance));
-            localStorage.setItem('gb_portal_reports_v5', JSON.stringify(State.reports));
-            localStorage.setItem('gb_portal_targets_v5', JSON.stringify(State.targets));
+            localStorage.setItem('gb_portal_current_user_v6', JSON.stringify(State.currentUser));
+            localStorage.setItem('gb_portal_users_v6', JSON.stringify(State.users));
+            localStorage.setItem('gb_portal_attendance_v6', JSON.stringify(State.attendance));
+            localStorage.setItem('gb_portal_reports_v6', JSON.stringify(State.reports));
+            localStorage.setItem('gb_portal_targets_v6', JSON.stringify(State.targets));
         }
 
         function render() {
@@ -168,9 +168,10 @@
                 const salesAmount = agentReports.reduce((sum, r) => sum + (r.amount || 0), 0);
                 const leads = agentReports.reduce((sum, r) => sum + (r.leads || 0), 0);
                 const orders = agentReports.reduce((sum, r) => sum + (r.orders || 0), 0);
+                const conversion = leads > 0 ? ((orders / leads) * 100).toFixed(1) : 0;
                 const target = State.targets[agent.username] || 50000;
                 const ratio = target > 0 ? Math.min(Math.round((salesAmount / target) * 100), 100) : 0;
-                return { name: agent.name, username: agent.username, team: agent.team, salesAmount, leads, orders, target, ratio };
+                return { name: agent.name, username: agent.username, team: agent.team, salesAmount, leads, orders, conversion, target, ratio };
             }).sort((a, b) => b.salesAmount - a.salesAmount);
 
             const teamsMap = {};
@@ -459,6 +460,9 @@
                                             <th class="p-3">Rank</th>
                                             <th class="p-3">Name</th>
                                             <th class="p-3">Team</th>
+                                            <th class="p-3">Leads</th>
+                                            <th class="p-3">Orders</th>
+                                            <th class="p-3">Conversion</th>
                                             <th class="p-3">Sales Amount (BDT)</th>
                                             <th class="p-3">Achievement Ratio</th>
                                         </tr>
@@ -469,8 +473,11 @@
                                                 <td class="p-3 font-bold text-base text-slate-900">${idx === 0 ? '🥇 1st' : idx === 1 ? '🥈 2nd' : idx === 2 ? '🥉 3rd' : `#${idx+1}`}</td>
                                                 <td class="p-3 font-medium text-slate-900">${item.name}</td>
                                                 <td class="p-3 text-slate-500">${item.team}</td>
+                                                <td class="p-3 font-semibold text-slate-800">${item.leads}</td>
+                                                <td class="p-3 font-semibold text-slate-800">${item.orders}</td>
+                                                <td class="p-3 font-semibold text-blue-600">${item.conversion}%</td>
                                                 <td class="p-3 text-orange-600 font-bold">৳${item.salesAmount.toLocaleString()} / ৳${item.target.toLocaleString()}</td>
-                                                <td class="p-3 w-48">
+                                                <td class="p-3 w-40">
                                                     <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
                                                         <div class="bg-orange-500 h-2.5 rounded-full" style="width: ${item.ratio}%"></div>
                                                     </div>
@@ -662,9 +669,12 @@
             const leaderboard = agents.map(agent => {
                 const agentReports = State.reports.filter(r => r.username === agent.username);
                 const salesAmount = agentReports.reduce((sum, r) => sum + (r.amount || 0), 0);
+                const leads = agentReports.reduce((sum, r) => sum + (r.leads || 0), 0);
+                const orders = agentReports.reduce((sum, r) => sum + (r.orders || 0), 0);
+                const conversion = leads > 0 ? ((orders / leads) * 100).toFixed(1) : 0;
                 const target = State.targets[agent.username] || 50000;
                 const ratio = target > 0 ? Math.min(Math.round((salesAmount / target) * 100), 100) : 0;
-                return { name: agent.name, username: agent.username, team: agent.team, salesAmount, target, ratio };
+                return { name: agent.name, username: agent.username, team: agent.team, salesAmount, leads, orders, conversion, target, ratio };
             }).sort((a, b) => b.salesAmount - a.salesAmount);
 
             const teamsMap = {};
@@ -771,24 +781,17 @@
 
                     <div class="${State.agentTab === 'leaderboard' ? '' : 'hidden'} space-y-6">
                         <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                            <h3 class="text-lg font-bold text-slate-900 mb-4">📊 Team-wise Comparison & Targets</h3>
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">📊 Team-wise Comparison</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                ${teamComparison.map(t => {
-                                    const teamRatio = t.totalTarget > 0 ? Math.min(Math.round((t.totalSales / t.totalTarget) * 100), 100) : 0;
-                                    return `
-                                        <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-sm">
-                                            <div class="flex justify-between items-center mb-2">
-                                                <h4 class="font-bold text-base text-slate-900">${t.teamName}</h4>
-                                                <span class="text-xs bg-orange-100 text-orange-600 px-2.5 py-1 rounded-full font-semibold">${t.agentsCount} Agents</span>
-                                            </div>
-                                            <p class="text-sm text-slate-600 mb-2">Total Sales: <span class="font-bold text-orange-600">৳${t.totalSales.toLocaleString()}</span> / Total Target: <span class="font-semibold text-slate-900">৳${t.totalTarget.toLocaleString()}</span></p>
-                                            <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
-                                                <div class="bg-orange-500 h-2.5 rounded-full" style="width: ${teamRatio}%"></div>
-                                            </div>
-                                            <span class="text-xs text-slate-500 mt-1 block">${teamRatio}% team target achieved</span>
+                                ${teamComparison.map(t => `
+                                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl shadow-sm">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <h4 class="font-bold text-slate-900">${t.teamName}</h4>
+                                            <span class="text-xs bg-orange-100 text-orange-600 px-2.5 py-0.5 rounded-full font-semibold">${t.agentsCount} Agents</span>
                                         </div>
-                                    `;
-                                }).join('')}
+                                        <p class="text-sm text-slate-500">Sales: <span class="font-bold text-orange-600">৳${t.totalSales.toLocaleString()}</span> / Target: ৳${t.totalTarget.toLocaleString()}</p>
+                                    </div>
+                                `).join('')}
                             </div>
                         </div>
 
@@ -801,6 +804,9 @@
                                             <th class="p-3">Rank</th>
                                             <th class="p-3">Agent Name</th>
                                             <th class="p-3">Team</th>
+                                            <th class="p-3">Leads</th>
+                                            <th class="p-3">Orders</th>
+                                            <th class="p-3">Conversion</th>
                                             <th class="p-3">Sales Amount (BDT)</th>
                                             <th class="p-3">Achievement Ratio</th>
                                         </tr>
@@ -811,8 +817,11 @@
                                                 <td class="p-3 text-slate-900">${idx === 0 ? '🥇 1st' : idx === 1 ? '🥈 2nd' : idx === 2 ? '🥉 3rd' : `#${idx + 1}`}</td>
                                                 <td class="p-3 text-slate-900">${item.name} ${item.username === State.currentUser.username ? '<span class="text-xs bg-orange-500 text-white px-2 py-0.5 rounded ml-1">You</span>' : ''}</td>
                                                 <td class="p-3 text-slate-500">${item.team}</td>
+                                                <td class="p-3 text-slate-800 font-semibold">${item.leads}</td>
+                                                <td class="p-3 text-slate-800 font-semibold">${item.orders}</td>
+                                                <td class="p-3 text-blue-600 font-semibold">${item.conversion}%</td>
                                                 <td class="p-3 text-orange-600 font-bold">৳${item.salesAmount.toLocaleString()} / ৳${item.target.toLocaleString()}</td>
-                                                <td class="p-3 w-48">
+                                                <td class="p-3 w-40">
                                                     <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
                                                         <div class="bg-orange-500 h-2.5 rounded-full" style="width: ${item.ratio}%"></div>
                                                     </div>
