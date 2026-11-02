@@ -15,15 +15,13 @@
     <div id="app" class="flex-grow flex flex-col"></div>
 
     <script>
-        let savedUsers = JSON.parse(localStorage.getItem('gb_portal_users_v4'));
+        let savedUsers = JSON.parse(localStorage.getItem('gb_portal_users_v5'));
         if (!savedUsers || !Array.isArray(savedUsers) || savedUsers.length === 0) {
             savedUsers = [
-                // Admins / Team Leaders
                 { id: 1, name: 'Md. Nazimur Rahman', username: '10122', password: 'admin123', role: 'admin', team: 'Team Nazim', active: true },
                 { id: 2, name: 'Md Abdus Samad', username: '10107', password: 'admin123', role: 'admin', team: 'Team Abdus Samad', active: true },
                 { id: 3, name: 'Admin Master', username: 'admin', password: 'admin123', role: 'admin', team: 'Management', active: true },
                 
-                // Agents from Images
                 { id: 4, name: 'Habibur Rahman Shuvo', username: '10098', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
                 { id: 5, name: 'Al-Amin Kazi', username: '10136', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
                 { id: 6, name: 'Zubayer Al Mahmud', username: '11007', password: '12345678', role: 'agent', team: 'Team Abdus Samad', active: true },
@@ -45,22 +43,22 @@
         }
 
         const State = {
-            currentUser: JSON.parse(localStorage.getItem('gb_portal_current_user_v4')) || null,
+            currentUser: JSON.parse(localStorage.getItem('gb_portal_current_user_v5')) || null,
             users: savedUsers,
-            attendance: JSON.parse(localStorage.getItem('gb_portal_attendance_v4')) || [],
-            reports: JSON.parse(localStorage.getItem('gb_portal_reports_v4')) || [],
-            targets: JSON.parse(localStorage.getItem('gb_portal_targets_v4')) || {},
+            attendance: JSON.parse(localStorage.getItem('gb_portal_attendance_v5')) || [],
+            reports: JSON.parse(localStorage.getItem('gb_portal_reports_v5')) || [],
+            targets: JSON.parse(localStorage.getItem('gb_portal_targets_v5')) || {},
             adminTab: 'overview',
             adminViewMode: 'month',
             agentTab: 'overview'
         };
 
         function saveState() {
-            localStorage.setItem('gb_portal_current_user_v4', JSON.stringify(State.currentUser));
-            localStorage.setItem('gb_portal_users_v4', JSON.stringify(State.users));
-            localStorage.setItem('gb_portal_attendance_v4', JSON.stringify(State.attendance));
-            localStorage.setItem('gb_portal_reports_v4', JSON.stringify(State.reports));
-            localStorage.setItem('gb_portal_targets_v4', JSON.stringify(State.targets));
+            localStorage.setItem('gb_portal_current_user_v5', JSON.stringify(State.currentUser));
+            localStorage.setItem('gb_portal_users_v5', JSON.stringify(State.users));
+            localStorage.setItem('gb_portal_attendance_v5', JSON.stringify(State.attendance));
+            localStorage.setItem('gb_portal_reports_v5', JSON.stringify(State.reports));
+            localStorage.setItem('gb_portal_targets_v5', JSON.stringify(State.targets));
         }
 
         function render() {
@@ -350,8 +348,9 @@
                                                     </span>
                                                 </td>
                                                 <td class="p-3 text-slate-500">${att.breakReason || 'None'}</td>
-                                                <td class="p-3">
-                                                    <button onclick="adminForceLogout(${idx})" class="text-red-500 hover:text-red-700 text-xs font-semibold bg-red-50 px-2 py-1 rounded border border-red-200">Force Close Shift</button>
+                                                <td class="p-3 flex gap-2">
+                                                    <button onclick="adminForceLogout(${idx})" class="text-amber-600 hover:text-amber-800 text-xs font-semibold bg-amber-50 px-2 py-1 rounded border border-amber-200">Close Shift</button>
+                                                    <button onclick="deleteAttendance(${idx})" class="text-red-500 hover:text-red-700 text-xs font-semibold bg-red-50 px-2 py-1 rounded border border-red-200">Clear Log</button>
                                                 </td>
                                             </tr>
                                         `).join('')}
@@ -429,6 +428,28 @@
                     </div>
 
                     <div class="${State.adminTab === 'leaderboard' ? '' : 'hidden'} space-y-6">
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">📊 Team-wise Comparison & Targets</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                ${teamComparison.map(t => {
+                                    const teamRatio = t.totalTarget > 0 ? Math.min(Math.round((t.totalSales / t.totalTarget) * 100), 100) : 0;
+                                    return `
+                                        <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-sm">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <h4 class="font-bold text-base text-slate-900">${t.teamName}</h4>
+                                                <span class="text-xs bg-orange-100 text-orange-600 px-2.5 py-1 rounded-full font-semibold">${t.agentsCount} Agents</span>
+                                            </div>
+                                            <p class="text-sm text-slate-600 mb-2">Total Sales: <span class="font-bold text-orange-600">৳${t.totalSales.toLocaleString()}</span> / Total Target: <span class="font-semibold text-slate-900">৳${t.totalTarget.toLocaleString()}</span></p>
+                                            <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+                                                <div class="bg-orange-500 h-2.5 rounded-full" style="width: ${teamRatio}%"></div>
+                                            </div>
+                                            <span class="text-xs text-slate-500 mt-1 block">${teamRatio}% team target achieved</span>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+
                         <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">🏆 Agent Leaderboard & Rankings</h3>
                             <div class="overflow-x-auto">
@@ -622,6 +643,14 @@
             }
         }
 
+        window.deleteAttendance = function(index) {
+            if (confirm('Are you sure you want to delete this attendance log?')) {
+                State.attendance.splice(index, 1);
+                saveState();
+                render();
+            }
+        }
+
         function renderAgentDashboard() {
             const activeAttendance = State.attendance.find(a => a.username === State.currentUser.username && !a.logoutTime);
             const myTarget = State.targets[State.currentUser.username] || 50000;
@@ -742,17 +771,24 @@
 
                     <div class="${State.agentTab === 'leaderboard' ? '' : 'hidden'} space-y-6">
                         <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                            <h3 class="text-lg font-bold text-slate-900 mb-4">📊 Team-wise Comparison</h3>
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">📊 Team-wise Comparison & Targets</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                ${teamComparison.map(t => `
-                                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl shadow-sm">
-                                        <div class="flex justify-between items-center mb-2">
-                                            <h4 class="font-bold text-slate-900">${t.teamName}</h4>
-                                            <span class="text-xs bg-orange-100 text-orange-600 px-2.5 py-0.5 rounded-full font-semibold">${t.agentsCount} Agents</span>
+                                ${teamComparison.map(t => {
+                                    const teamRatio = t.totalTarget > 0 ? Math.min(Math.round((t.totalSales / t.totalTarget) * 100), 100) : 0;
+                                    return `
+                                        <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-sm">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <h4 class="font-bold text-base text-slate-900">${t.teamName}</h4>
+                                                <span class="text-xs bg-orange-100 text-orange-600 px-2.5 py-1 rounded-full font-semibold">${t.agentsCount} Agents</span>
+                                            </div>
+                                            <p class="text-sm text-slate-600 mb-2">Total Sales: <span class="font-bold text-orange-600">৳${t.totalSales.toLocaleString()}</span> / Total Target: <span class="font-semibold text-slate-900">৳${t.totalTarget.toLocaleString()}</span></p>
+                                            <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+                                                <div class="bg-orange-500 h-2.5 rounded-full" style="width: ${teamRatio}%"></div>
+                                            </div>
+                                            <span class="text-xs text-slate-500 mt-1 block">${teamRatio}% team target achieved</span>
                                         </div>
-                                        <p class="text-sm text-slate-500">Sales: <span class="font-bold text-orange-600">৳${t.totalSales.toLocaleString()}</span> / Target: ৳${t.totalTarget.toLocaleString()}</p>
-                                    </div>
-                                `).join('')}
+                                    `;
+                                }).join('')}
                             </div>
                         </div>
 
