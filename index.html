@@ -24,7 +24,7 @@
             reports: JSON.parse(localStorage.getItem('gb_reports')) || [],
             targets: JSON.parse(localStorage.getItem('gb_targets')) || {},
             adminTab: 'overview',
-            adminViewMode: 'month', // 'month' or 'today'
+            adminViewMode: 'month',
             agentTab: 'overview'
         };
 
@@ -87,7 +87,7 @@
                 e.preventDefault();
                 const u = document.getElementById('username').value.trim();
                 const p = document.getElementById('password').value.trim();
-                const found = State.users.find(x => x.username === u && x.password === p);
+                const found = State.users.find(x => String(x.username).trim() === u && String(x.password).trim() === p);
                 if (found) {
                     State.currentUser = found;
                     saveState();
@@ -137,7 +137,6 @@
             const teamComparison = Object.values(teamsMap).sort((a, b) => b.totalSales - a.totalSales);
 
             return `
-                <!-- Top Header -->
                 <nav class="bg-slate-900 text-white px-6 py-3 flex justify-between items-center shadow">
                     <div class="flex items-center gap-3">
                         <div class="bg-orange-500 text-white px-3 py-1.5 rounded font-bold text-sm tracking-wider">
@@ -154,7 +153,6 @@
                     </div>
                 </nav>
 
-                <!-- Navigation Tabs Bar -->
                 <div class="bg-white border-b border-slate-200 px-6 flex gap-4 shadow-sm">
                     <button onclick="setAdminTab('overview')" class="py-3 px-4 font-semibold text-sm border-b-2 transition ${State.adminTab === 'overview' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📊 Sales Overview</button>
                     <button onclick="setAdminTab('agents')" class="py-3 px-4 font-semibold text-sm border-b-2 transition ${State.adminTab === 'agents' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">👥 Agent Management</button>
@@ -164,7 +162,6 @@
 
                 <div class="flex-grow p-6 max-w-7xl mx-auto w-full space-y-6">
                     
-                    <!-- TAB 1: OVERVIEW -->
                     <div class="${State.adminTab === 'overview' ? '' : 'hidden'} space-y-6">
                         <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-md flex flex-col md:flex-row justify-between items-center gap-4">
                             <div>
@@ -177,7 +174,6 @@
                             </div>
                         </div>
 
-                        <!-- Clean KPI Cards (Only Leads, Orders, Amount) -->
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm border-l-4 border-l-orange-500">
                                 <p class="text-slate-500 text-xs uppercase font-semibold">Total Sales Amount</p>
@@ -197,7 +193,6 @@
                             </div>
                         </div>
 
-                        <!-- Team-wise Comparison -->
                         <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">📊 Team-wise Comparison & Performance</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -214,14 +209,13 @@
                         </div>
                     </div>
 
-                    <!-- TAB 2: AGENT MANAGEMENT -->
                     <div class="${State.adminTab === 'agents' ? '' : 'hidden'} space-y-6">
                         <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">Create New Agent Account</h3>
                             <form id="createAgentForm" class="grid grid-cols-1 md:grid-cols-5 gap-4">
                                 <input type="text" id="newName" placeholder="Agent Full Name" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
-                                <input type="text" id="newUsername" placeholder="Username" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
-                                <input type="text" id="newPassword" placeholder="Password" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                <input type="text" id="newUsername" placeholder="Username (e.g. 11044)" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                <input type="text" id="newPassword" placeholder="Password (e.g. 12345678)" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
                                 <select id="newTeam" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
                                     <option value="Team Nazim">Team Nazim</option>
                                     <option value="Team Abdus Samad">Team Abdus Samad</option>
@@ -238,17 +232,19 @@
                                         <tr>
                                             <th class="p-3">Name</th>
                                             <th class="p-3">Username</th>
+                                            <th class="p-3">Password</th>
                                             <th class="p-3">Team</th>
                                             <th class="p-3">Target Amount (BDT)</th>
                                             <th class="p-3">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-slate-200">
-                                        ${agents.length === 0 ? `<tr><td colspan="5" class="p-4 text-center text-slate-400">No agents found.</td></tr>` : 
+                                        ${agents.length === 0 ? `<tr><td colspan="6" class="p-4 text-center text-slate-400">No agents found.</td></tr>` : 
                                         agents.map(u => `
                                             <tr>
                                                 <td class="p-3 font-medium text-slate-900">${u.name}</td>
-                                                <td class="p-3 text-slate-600">${u.username}</td>
+                                                <td class="p-3 text-slate-600 font-semibold">${u.username}</td>
+                                                <td class="p-3 text-slate-500">${u.password}</td>
                                                 <td class="p-3"><span class="bg-slate-100 text-slate-800 px-2 py-1 rounded text-xs font-semibold">${u.team}</span></td>
                                                 <td class="p-3">
                                                     <div class="flex items-center gap-2">
@@ -268,7 +264,6 @@
                         </div>
                     </div>
 
-                    <!-- TAB 3: MANUAL REPORT ENTRY -->
                     <div class="${State.adminTab === 'reports' ? '' : 'hidden'} space-y-6">
                         <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">📝 Manual Report Entry (Admin Override)</h3>
@@ -277,7 +272,7 @@
                                     <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Select Agent</label>
                                     <select id="adminAgentUsername" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
                                         <option value="">Choose Agent</option>
-                                        ${agents.map(a => `<option value="${a.username}">${a.name} (${a.team})</option>`).join('')}
+                                        ${agents.map(a => `<option value="${a.username}">${a.name} (${a.username})</option>`).join('')}
                                     </select>
                                 </div>
                                 <div>
@@ -336,7 +331,6 @@
                         </div>
                     </div>
 
-                    <!-- TAB 4: LEADERBOARD -->
                     <div class="${State.adminTab === 'leaderboard' ? '' : 'hidden'} space-y-6">
                         <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">🏆 Agent Leaderboard & Rankings</h3>
@@ -431,7 +425,7 @@
                     const password = document.getElementById('newPassword').value.trim();
                     const team = document.getElementById('newTeam').value;
 
-                    if (State.users.some(u => u.username === username)) {
+                    if (State.users.some(u => String(u.username).trim() === username)) {
                         alert('Username already exists!');
                         return;
                     }
@@ -439,6 +433,7 @@
                     State.users.push({ id: Date.now(), name, username, password, role: 'agent', team });
                     State.targets[username] = 50000;
                     saveState();
+                    alert('Agent created successfully!');
                     render();
                 });
             }
@@ -551,7 +546,6 @@
                     <button onclick="logout()" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-3 py-1.5 rounded text-xs font-semibold">Logout</button>
                 </nav>
 
-                <!-- Agent Tabs Bar -->
                 <div class="bg-white border-b border-slate-200 px-6 flex gap-4 shadow-sm">
                     <button onclick="setAgentTab('overview')" class="py-3 px-4 font-semibold text-sm border-b-2 transition ${State.agentTab === 'overview' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📈 Month Overview & Submit</button>
                     <button onclick="setAgentTab('attendance')" class="py-3 px-4 font-semibold text-sm border-b-2 transition ${State.agentTab === 'attendance' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">⏱️ Shift & Attendance</button>
@@ -560,7 +554,6 @@
 
                 <div class="flex-grow p-6 max-w-5xl mx-auto w-full space-y-6">
                     
-                    <!-- AGENT TAB 1: OVERVIEW & SUBMIT -->
                     <div class="${State.agentTab === 'overview' ? '' : 'hidden'} space-y-6">
                         <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-md flex justify-between items-center">
                             <div>
@@ -605,7 +598,6 @@
                         </div>
                     </div>
 
-                    <!-- AGENT TAB 2: ATTENDANCE -->
                     <div class="${State.agentTab === 'attendance' ? '' : 'hidden'} space-y-6">
                         <div class="bg-white border border-slate-200 rounded-xl p-8 text-center space-y-4 shadow-sm">
                             <h3 class="text-xl font-bold text-slate-900">Shift & Attendance Portal</h3>
@@ -621,7 +613,6 @@
                         </div>
                     </div>
 
-                    <!-- AGENT TAB 3: LEADERBOARD -->
                     <div class="${State.agentTab === 'leaderboard' ? '' : 'hidden'} space-y-6">
                         <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">📊 Team-wise Comparison</h3>
