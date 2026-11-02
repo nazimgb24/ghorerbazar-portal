@@ -24,7 +24,7 @@
             reports: JSON.parse(localStorage.getItem('gb_reports')) || [],
             targets: JSON.parse(localStorage.getItem('gb_targets')) || {},
             adminTab: 'overview',
-            adminViewMode: 'month',
+            adminViewMode: 'month', // 'month' or 'today'
             agentTab: 'overview'
         };
 
@@ -137,7 +137,7 @@
             const teamComparison = Object.values(teamsMap).sort((a, b) => b.totalSales - a.totalSales);
 
             return `
-                <!-- Top Dark ERP Header -->
+                <!-- Top Header -->
                 <nav class="bg-slate-900 text-white px-6 py-3 flex justify-between items-center shadow">
                     <div class="flex items-center gap-3">
                         <div class="bg-orange-500 text-white px-3 py-1.5 rounded font-bold text-sm tracking-wider">
@@ -156,49 +156,39 @@
 
                 <!-- Navigation Tabs Bar -->
                 <div class="bg-white border-b border-slate-200 px-6 flex gap-4 shadow-sm">
-                    <button onclick="setAdminTab('overview')" class="py-3 px-3 font-semibold text-sm border-b-2 transition ${State.adminTab === 'overview' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📊 Sales Overview</button>
-                    <button onclick="setAdminTab('agents')" class="py-3 px-3 font-semibold text-sm border-b-2 transition ${State.adminTab === 'agents' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">👥 Agent Management</button>
-                    <button onclick="setAdminTab('reports')" class="py-3 px-3 font-semibold text-sm border-b-2 transition ${State.adminTab === 'reports' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📝 Manual Report Entry</button>
-                    <button onclick="setAdminTab('leaderboard')" class="py-3 px-3 font-semibold text-sm border-b-2 transition ${State.adminTab === 'leaderboard' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">🏆 Leaderboard & Rankings</button>
+                    <button onclick="setAdminTab('overview')" class="py-3 px-4 font-semibold text-sm border-b-2 transition ${State.adminTab === 'overview' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📊 Sales Overview</button>
+                    <button onclick="setAdminTab('agents')" class="py-3 px-4 font-semibold text-sm border-b-2 transition ${State.adminTab === 'agents' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">👥 Agent Management</button>
+                    <button onclick="setAdminTab('reports')" class="py-3 px-4 font-semibold text-sm border-b-2 transition ${State.adminTab === 'reports' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📝 Manual Report Entry</button>
+                    <button onclick="setAdminTab('leaderboard')" class="py-3 px-4 font-semibold text-sm border-b-2 transition ${State.adminTab === 'leaderboard' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">🏆 Leaderboard & Rankings</button>
                 </div>
 
                 <div class="flex-grow p-6 max-w-7xl mx-auto w-full space-y-6">
                     
                     <!-- TAB 1: OVERVIEW -->
                     <div class="${State.adminTab === 'overview' ? '' : 'hidden'} space-y-6">
-                        <!-- ERP Style Night Greeting Banner -->
                         <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-md flex flex-col md:flex-row justify-between items-center gap-4">
                             <div>
-                                <h2 class="text-xl font-bold">Good Day, ${State.currentUser.name}!</h2>
-                                <p class="text-xs text-slate-400 mt-1">Here's what's happening with sales performance today.</p>
+                                <h2 class="text-xl font-bold">Welcome, ${State.currentUser.name}!</h2>
+                                <p class="text-xs text-slate-400 mt-1">Sales performance overview & team analytics.</p>
                             </div>
-                            <div class="flex items-center gap-3 bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-700 text-xs">
-                                <span class="text-slate-300">📅 ${new Date().toLocaleDateString()}</span>
-                                <span class="bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded font-semibold uppercase">${State.adminViewMode} Mode</span>
-                            </div>
-                        </div>
-
-                        <!-- Toggle View Mode -->
-                        <div class="flex justify-between items-center bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
-                            <h3 class="font-bold text-slate-900 text-sm">Performance View Filter:</h3>
-                            <div class="flex gap-2">
-                                <button onclick="setAdminViewMode('month')" class="px-4 py-1.5 text-xs font-semibold rounded-lg transition ${State.adminViewMode === 'month' ? 'bg-orange-500 text-white shadow' : 'bg-slate-100 text-slate-700'}">Month-wise</button>
-                                <button onclick="setAdminViewMode('today')" class="px-4 py-1.5 text-xs font-semibold rounded-lg transition ${State.adminViewMode === 'today' ? 'bg-orange-500 text-white shadow' : 'bg-slate-100 text-slate-700'}">Today's View</button>
+                            <div class="flex items-center gap-2 bg-slate-800 p-1 rounded-xl border border-slate-700">
+                                <button onclick="setAdminViewMode('month')" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition ${State.adminViewMode === 'month' ? 'bg-orange-500 text-white' : 'text-slate-300'}">Month-wise</button>
+                                <button onclick="setAdminViewMode('today')" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition ${State.adminViewMode === 'today' ? 'bg-orange-500 text-white' : 'text-slate-300'}">Today's View</button>
                             </div>
                         </div>
 
-                        <!-- ERP Style Soft Metric KPI Cards -->
+                        <!-- Clean KPI Cards (Only Leads, Orders, Amount) -->
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm border-l-4 border-l-orange-500">
                                 <p class="text-slate-500 text-xs uppercase font-semibold">Total Sales Amount</p>
                                 <h3 class="text-2xl font-bold text-orange-600 mt-1">৳${totalSalesAll.toLocaleString()}</h3>
                             </div>
                             <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm border-l-4 border-l-blue-500">
-                                <p class="text-slate-500 text-xs uppercase font-semibold">Total Orders Confirmed</p>
+                                <p class="text-slate-500 text-xs uppercase font-semibold">Total Orders</p>
                                 <h3 class="text-2xl font-bold text-slate-900 mt-1">${totalOrdersAll}</h3>
                             </div>
                             <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm border-l-4 border-l-purple-500">
-                                <p class="text-slate-500 text-xs uppercase font-semibold">Total Leads Generated</p>
+                                <p class="text-slate-500 text-xs uppercase font-semibold">Total Leads</p>
                                 <h3 class="text-2xl font-bold text-slate-900 mt-1">${totalLeadsAll}</h3>
                             </div>
                             <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm border-l-4 border-l-emerald-500">
@@ -207,9 +197,9 @@
                             </div>
                         </div>
 
-                        <!-- Team Comparison Cards -->
+                        <!-- Team-wise Comparison -->
                         <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                            <h3 class="text-lg font-bold text-slate-900 mb-4">📊 Team Comparison</h3>
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">📊 Team-wise Comparison & Performance</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 ${teamComparison.map(t => `
                                     <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl shadow-sm">
@@ -563,23 +553,22 @@
 
                 <!-- Agent Tabs Bar -->
                 <div class="bg-white border-b border-slate-200 px-6 flex gap-4 shadow-sm">
-                    <button onclick="setAgentTab('overview')" class="py-3 px-3 font-semibold text-sm border-b-2 transition ${State.agentTab === 'overview' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📈 Month Overview & Submit</button>
-                    <button onclick="setAgentTab('attendance')" class="py-3 px-3 font-semibold text-sm border-b-2 transition ${State.agentTab === 'attendance' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">⏱️ Shift & Attendance</button>
-                    <button onclick="setAgentTab('leaderboard')" class="py-3 px-3 font-semibold text-sm border-b-2 transition ${State.agentTab === 'leaderboard' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">🏆 Team Leaderboard</button>
+                    <button onclick="setAgentTab('overview')" class="py-3 px-4 font-semibold text-sm border-b-2 transition ${State.agentTab === 'overview' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📈 Month Overview & Submit</button>
+                    <button onclick="setAgentTab('attendance')" class="py-3 px-4 font-semibold text-sm border-b-2 transition ${State.agentTab === 'attendance' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">⏱️ Shift & Attendance</button>
+                    <button onclick="setAgentTab('leaderboard')" class="py-3 px-4 font-semibold text-sm border-b-2 transition ${State.agentTab === 'leaderboard' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">🏆 Team Leaderboard</button>
                 </div>
 
                 <div class="flex-grow p-6 max-w-5xl mx-auto w-full space-y-6">
                     
                     <!-- AGENT TAB 1: OVERVIEW & SUBMIT -->
                     <div class="${State.agentTab === 'overview' ? '' : 'hidden'} space-y-6">
-                        <!-- ERP Style Greeting Banner -->
                         <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-md flex justify-between items-center">
                             <div>
                                 <h2 class="text-xl font-bold">Welcome, ${State.currentUser.name}!</h2>
                                 <p class="text-xs text-slate-400 mt-1">Team: ${State.currentUser.team}</p>
                             </div>
                             <div class="bg-slate-800 px-4 py-2 rounded-xl text-xs text-slate-300">
-                                📅 Month Performance
+                                📅 Month Performance Overview
                             </div>
                         </div>
 
@@ -635,7 +624,7 @@
                     <!-- AGENT TAB 3: LEADERBOARD -->
                     <div class="${State.agentTab === 'leaderboard' ? '' : 'hidden'} space-y-6">
                         <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                            <h3 class="text-lg font-bold text-slate-900 mb-4">📊 Team Comparison</h3>
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">📊 Team-wise Comparison</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 ${teamComparison.map(t => `
                                     <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl shadow-sm">
