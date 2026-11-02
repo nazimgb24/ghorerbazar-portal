@@ -15,7 +15,7 @@
     <div id="app" class="flex-grow flex flex-col"></div>
 
     <script>
-        let savedUsers = JSON.parse(localStorage.getItem('gb_portal_users_v9'));
+        let savedUsers = JSON.parse(localStorage.getItem('gb_portal_users_v10'));
         if (!savedUsers || !Array.isArray(savedUsers) || savedUsers.length === 0) {
             savedUsers = [
                 { id: 1, name: 'Md. Nazimur Rahman', username: '10122', password: 'admin123', role: 'admin', team: 'Team Nazim', active: true },
@@ -44,11 +44,11 @@
         }
 
         const State = {
-            currentUser: JSON.parse(localStorage.getItem('gb_portal_current_user_v9')) || null,
+            currentUser: JSON.parse(localStorage.getItem('gb_portal_current_user_v10')) || null,
             users: savedUsers,
-            attendance: JSON.parse(localStorage.getItem('gb_portal_attendance_v9')) || [],
-            reports: JSON.parse(localStorage.getItem('gb_portal_reports_v9')) || [],
-            targets: JSON.parse(localStorage.getItem('gb_portal_targets_v9')) || {},
+            attendance: JSON.parse(localStorage.getItem('gb_portal_attendance_v10')) || [],
+            reports: JSON.parse(localStorage.getItem('gb_portal_reports_v10')) || [],
+            targets: JSON.parse(localStorage.getItem('gb_portal_targets_v10')) || {},
             adminTab: 'overview',
             adminViewMode: 'month',
             selectedAgentDetails: null,
@@ -56,11 +56,11 @@
         };
 
         function saveState() {
-            localStorage.setItem('gb_portal_current_user_v9', JSON.stringify(State.currentUser));
-            localStorage.setItem('gb_portal_users_v9', JSON.stringify(State.users));
-            localStorage.setItem('gb_portal_attendance_v9', JSON.stringify(State.attendance));
-            localStorage.setItem('gb_portal_reports_v9', JSON.stringify(State.reports));
-            localStorage.setItem('gb_portal_targets_v9', JSON.stringify(State.targets));
+            localStorage.setItem('gb_portal_current_user_v10', JSON.stringify(State.currentUser));
+            localStorage.setItem('gb_portal_users_v10', JSON.stringify(State.users));
+            localStorage.setItem('gb_portal_attendance_v10', JSON.stringify(State.attendance));
+            localStorage.setItem('gb_portal_reports_v10', JSON.stringify(State.reports));
+            localStorage.setItem('gb_portal_targets_v10', JSON.stringify(State.targets));
         }
 
         function render() {
@@ -373,8 +373,8 @@
                             ` : ''}
 
                             <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                                <h3 class="text-lg font-bold text-slate-900 mb-4">Agent List & Performance Directory</h3>
-                                <p class="text-xs text-slate-500 mb-4">Click on an agent's name to view their complete day-wise records.</p>
+                                <h3 class="text-lg font-bold text-slate-900 mb-4">Agent List & Target Management</h3>
+                                <p class="text-xs text-slate-500 mb-4">Click on an agent's name to view records. Edit monthly targets directly in the table.</p>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left text-sm text-slate-700">
                                         <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
@@ -383,7 +383,7 @@
                                                 <th class="p-3">Emp ID</th>
                                                 <th class="p-3">Team</th>
                                                 <th class="p-3">Status</th>
-                                                <th class="p-3">Monthly Target</th>
+                                                <th class="p-3">Monthly Target (BDT)</th>
                                                 <th class="p-3">Daily Target (÷26)</th>
                                                 <th class="p-3">Action</th>
                                             </tr>
@@ -399,14 +399,31 @@
                                                         <td class="p-3 text-slate-600 font-semibold">${u.username}</td>
                                                         <td class="p-3"><span class="bg-slate-100 text-slate-800 px-2 py-1 rounded text-xs font-semibold">${u.team}</span></td>
                                                         <td class="p-3">
-                                                            <span class="px-2.5 py-1 rounded-lg text-xs font-semibold ${u.active !== false ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">
-                                                                ${u.active !== false ? 'Active' : 'Inactive'}
-                                                            </span>
+                                                            ${!isSupervisor ? `
+                                                                <button onclick="toggleAgentStatus(${u.id})" class="px-3 py-1 rounded-lg text-xs font-semibold transition ${u.active !== false ? 'bg-emerald-100 text-emerald-700 border border-emerald-300 hover:bg-emerald-200' : 'bg-red-100 text-red-700 border border-red-300 hover:bg-red-200'}">
+                                                                    ${u.active !== false ? '🟢 Active' : '🔴 Inactive'}
+                                                                </button>
+                                                            ` : `
+                                                                <span class="px-2.5 py-1 rounded-lg text-xs font-semibold ${u.active !== false ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">${u.active !== false ? 'Active' : 'Inactive'}</span>
+                                                            `}
                                                         </td>
-                                                        <td class="p-3 font-semibold">৳${uTarget.toLocaleString()}</td>
+                                                        <td class="p-3">
+                                                            ${!isSupervisor ? `
+                                                                <div class="flex items-center gap-2">
+                                                                    <input type="number" id="target_${u.username}" value="${uTarget}" class="bg-slate-50 border border-slate-300 rounded px-2 py-1 w-28 text-slate-900 text-sm">
+                                                                    <button onclick="updateAgentTarget('${u.username}')" class="bg-orange-500 hover:bg-orange-600 text-white px-2.5 py-1 rounded text-xs font-semibold">Set</button>
+                                                                </div>
+                                                            ` : `
+                                                                <span class="font-semibold text-slate-900">৳${uTarget.toLocaleString()}</span>
+                                                            `}
+                                                        </td>
                                                         <td class="p-3 font-semibold text-slate-600">৳${uDaily.toLocaleString()}</td>
                                                         <td class="p-3 flex gap-2">
                                                             <button onclick="viewAgentDetails('${u.username}')" class="text-orange-600 hover:text-orange-800 text-xs font-semibold">View Details</button>
+                                                            ${!isSupervisor ? `
+                                                                <button onclick="editUserPrompt(${u.id})" class="text-blue-600 hover:text-blue-800 text-xs font-semibold">Edit</button>
+                                                                <button onclick="deleteUser(${u.id})" class="text-red-500 hover:text-red-700 text-xs font-semibold">Delete</button>
+                                                            ` : ''}
                                                         </td>
                                                     </tr>
                                                 `;
@@ -731,6 +748,7 @@
             State.targets[username] = val;
             saveState();
             alert('Target updated successfully!');
+            render();
         }
 
         window.editUserPrompt = function(id) {
