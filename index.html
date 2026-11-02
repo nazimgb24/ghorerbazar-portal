@@ -10,7 +10,7 @@
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-orange-500 selection:text-white">
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col selection:bg-orange-500 selection:text-white">
 
     <div id="app" class="flex-grow flex flex-col"></div>
 
@@ -24,7 +24,6 @@
             if (!savedUsers.some(u => u.username === 'admin')) {
                 savedUsers.unshift({ id: 1, name: 'Admin User', username: 'admin', password: 'admin123', role: 'admin', team: 'Management', active: true });
             }
-            // Ensure all users have active field default to true
             savedUsers.forEach(u => { if (u.active === undefined) u.active = true; });
         }
 
@@ -65,30 +64,29 @@
 
         function renderLogin() {
             return `
-                <div class="flex-grow flex items-center justify-center p-4 bg-slate-950">
-                    <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl w-full max-w-md p-8 relative overflow-hidden">
-                        <div class="absolute -top-24 -right-24 w-48 h-48 bg-orange-500/10 rounded-full blur-3xl"></div>
-                        <div class="text-center mb-8 relative z-10">
-                            <div class="inline-flex bg-gradient-to-tr from-orange-600 to-amber-500 text-white p-3.5 rounded-2xl shadow-lg mb-4 items-center justify-center font-bold text-xl tracking-wider">
+                <div class="flex-grow flex items-center justify-center p-4 bg-slate-100">
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-xl w-full max-w-md p-8 relative">
+                        <div class="text-center mb-8">
+                            <div class="inline-flex bg-orange-500 text-white p-3.5 rounded-2xl shadow-md mb-4 items-center justify-center font-bold text-xl tracking-wider">
                                 GB
                             </div>
-                            <h1 class="text-2xl font-bold text-white">GhorerBazar</h1>
-                            <p class="text-xs text-orange-400 mt-1 uppercase tracking-widest font-medium">Sales Performance Portal</p>
+                            <h1 class="text-2xl font-bold text-slate-900">GhorerBazar</h1>
+                            <p class="text-xs text-orange-600 mt-1 uppercase tracking-widest font-semibold">Sales Performance Portal</p>
                         </div>
-                        <form id="loginForm" class="space-y-5 relative z-10">
+                        <form id="loginForm" class="space-y-5">
                             <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Username</label>
-                                <input type="text" id="username" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 transition text-sm" placeholder="Enter username">
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Username</label>
+                                <input type="text" id="username" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:border-orange-500 transition text-sm" placeholder="Enter username">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Password</label>
-                                <input type="password" id="password" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500 transition text-sm" placeholder="Enter password">
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Password</label>
+                                <input type="password" id="password" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:border-orange-500 transition text-sm" placeholder="Enter password">
                             </div>
-                            <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-orange-500/20 text-sm">
+                            <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-xl transition shadow-md text-sm">
                                 Secure Sign In &rarr;
                             </button>
                         </form>
-                        <div id="loginError" class="mt-4 text-red-400 text-center text-sm hidden"></div>
+                        <div id="loginError" class="mt-4 text-red-500 text-center text-sm hidden font-medium"></div>
                     </div>
                 </div>
             `;
@@ -137,7 +135,6 @@
 
         function renderAdminDashboard() {
             const activeAttendance = State.attendance.filter(a => !a.logoutTime);
-            // Only count active agents in performance and active lists
             const agents = State.users.filter(u => u.role === 'agent' && u.active !== false);
             const allAgents = State.users.filter(u => u.role === 'agent');
             const todayStr = new Date().toLocaleDateString();
@@ -174,73 +171,73 @@
             const teamComparison = Object.values(teamsMap).sort((a, b) => b.totalSales - a.totalSales);
 
             return `
-                <nav class="bg-slate-900 border-b border-slate-800 text-white px-6 py-3.5 flex justify-between items-center shadow-lg">
+                <nav class="bg-slate-900 text-white px-6 py-3.5 flex justify-between items-center shadow">
                     <div class="flex items-center gap-3">
-                        <div class="bg-gradient-to-tr from-orange-600 to-amber-500 text-white px-3 py-1.5 rounded-xl font-bold text-sm tracking-wider shadow">
+                        <div class="bg-orange-500 text-white px-3 py-1.5 rounded-lg font-bold text-sm tracking-wider">
                             GHORER BAZAR
                         </div>
-                        <span class="text-xs text-orange-400 font-medium">Admin Control Center</span>
+                        <span class="text-xs text-slate-400">Admin Control Center</span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <button onclick="exportData()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-slate-700 transition">📥 Backup</button>
-                        <label class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-slate-700 cursor-pointer transition">
+                        <button onclick="exportData()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-lg text-xs font-semibold border border-slate-700 transition">📥 Backup</button>
+                        <label class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-lg text-xs font-semibold border border-slate-700 cursor-pointer transition">
                             📤 Restore <input type="file" id="importFile" onchange="importData(event)" class="hidden" accept=".json">
                         </label>
-                        <button onclick="logout()" class="bg-red-500/10 hover:bg-red-600 text-red-400 hover:text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold transition border border-red-500/20">Logout</button>
+                        <button onclick="logout()" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold transition">Logout</button>
                     </div>
                 </nav>
 
-                <div class="bg-slate-900/50 border-b border-slate-800 px-6 flex gap-2 overflow-x-auto">
-                    <button onclick="setAdminTab('overview')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'overview' ? 'border-orange-500 text-orange-400 bg-slate-800/40' : 'border-transparent text-slate-400 hover:text-white'}">📊 Sales Overview</button>
-                    <button onclick="setAdminTab('agents')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'agents' ? 'border-orange-500 text-orange-400 bg-slate-800/40' : 'border-transparent text-slate-400 hover:text-white'}">👥 Agent Management</button>
-                    <button onclick="setAdminTab('attendance')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'attendance' ? 'border-orange-500 text-orange-400 bg-slate-800/40' : 'border-transparent text-slate-400 hover:text-white'}">⏱️ Attendance & Breaks</button>
-                    <button onclick="setAdminTab('reports')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'reports' ? 'border-orange-500 text-orange-400 bg-slate-800/40' : 'border-transparent text-slate-400 hover:text-white'}">📝 Manual Report Entry</button>
-                    <button onclick="setAdminTab('leaderboard')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'leaderboard' ? 'border-orange-500 text-orange-400 bg-slate-800/40' : 'border-transparent text-slate-400 hover:text-white'}">🏆 Leaderboard</button>
+                <div class="bg-white border-b border-slate-200 px-6 flex gap-2 overflow-x-auto shadow-sm">
+                    <button onclick="setAdminTab('overview')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'overview' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📊 Sales Overview</button>
+                    <button onclick="setAdminTab('agents')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'agents' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">👥 Agent Management</button>
+                    <button onclick="setAdminTab('attendance')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'attendance' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">⏱️ Attendance & Breaks</button>
+                    <button onclick="setAdminTab('reports')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'reports' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📝 Manual Report Entry</button>
+                    <button onclick="setAdminTab('leaderboard')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.adminTab === 'leaderboard' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">🏆 Leaderboard</button>
                 </div>
 
-                <div class="flex-grow p-6 max-w-7xl mx-auto w-full space-y-6 bg-slate-950">
+                <div class="flex-grow p-6 max-w-7xl mx-auto w-full space-y-6 bg-slate-100">
                     
                     <div class="${State.adminTab === 'overview' ? '' : 'hidden'} space-y-6">
-                        <div class="bg-gradient-to-r from-slate-900 to-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-md flex flex-col md:flex-row justify-between items-center gap-4">
                             <div>
-                                <h2 class="text-xl font-bold text-white">Welcome, ${State.currentUser.name}!</h2>
+                                <h2 class="text-xl font-bold">Welcome, ${State.currentUser.name}!</h2>
                                 <p class="text-xs text-slate-400 mt-1">Real-time performance analytics.</p>
                             </div>
-                            <div class="flex items-center gap-2 bg-slate-950 p-1.5 rounded-xl border border-slate-800">
-                                <button onclick="setAdminViewMode('month')" class="px-4 py-1.5 text-xs font-semibold rounded-lg transition ${State.adminViewMode === 'month' ? 'bg-orange-500 text-white shadow' : 'text-slate-400 hover:text-white'}">Month-wise</button>
-                                <button onclick="setAdminViewMode('today')" class="px-4 py-1.5 text-xs font-semibold rounded-lg transition ${State.adminViewMode === 'today' ? 'bg-orange-500 text-white shadow' : 'text-slate-400 hover:text-white'}">Today's View</button>
+                            <div class="flex items-center gap-2 bg-slate-800 p-1 rounded-xl border border-slate-700">
+                                <button onclick="setAdminViewMode('month')" class="px-4 py-1.5 text-xs font-semibold rounded-lg transition ${State.adminViewMode === 'month' ? 'bg-orange-500 text-white' : 'text-slate-300'}">Month-wise</button>
+                                <button onclick="setAdminViewMode('today')" class="px-4 py-1.5 text-xs font-semibold rounded-lg transition ${State.adminViewMode === 'today' ? 'bg-orange-500 text-white' : 'text-slate-300'}">Today's View</button>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg border-l-4 border-l-orange-500">
-                                <p class="text-slate-400 text-xs uppercase font-semibold">Total Sales Amount</p>
-                                <h3 class="text-2xl font-bold text-orange-400 mt-1">৳${totalSalesAll.toLocaleString()}</h3>
+                            <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm border-l-4 border-l-orange-500">
+                                <p class="text-slate-500 text-xs uppercase font-semibold">Total Sales Amount</p>
+                                <h3 class="text-2xl font-bold text-orange-600 mt-1">৳${totalSalesAll.toLocaleString()}</h3>
                             </div>
-                            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg border-l-4 border-l-blue-500">
-                                <p class="text-slate-400 text-xs uppercase font-semibold">Total Orders</p>
-                                <h3 class="text-2xl font-bold text-white mt-1">${totalOrdersAll}</h3>
+                            <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm border-l-4 border-l-blue-500">
+                                <p class="text-slate-500 text-xs uppercase font-semibold">Total Orders</p>
+                                <h3 class="text-2xl font-bold text-slate-900 mt-1">${totalOrdersAll}</h3>
                             </div>
-                            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg border-l-4 border-l-purple-500">
-                                <p class="text-slate-400 text-xs uppercase font-semibold">Total Leads</p>
-                                <h3 class="text-2xl font-bold text-white mt-1">${totalLeadsAll}</h3>
+                            <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm border-l-4 border-l-purple-500">
+                                <p class="text-slate-500 text-xs uppercase font-semibold">Total Leads</p>
+                                <h3 class="text-2xl font-bold text-slate-900 mt-1">${totalLeadsAll}</h3>
                             </div>
-                            <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-lg border-l-4 border-l-emerald-500">
-                                <p class="text-slate-400 text-xs uppercase font-semibold">Active Agents Online</p>
-                                <h3 class="text-2xl font-bold text-emerald-400 mt-1">${activeAttendance.length} / ${agents.length}</h3>
+                            <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm border-l-4 border-l-emerald-500">
+                                <p class="text-slate-500 text-xs uppercase font-semibold">Active Agents Online</p>
+                                <h3 class="text-2xl font-bold text-emerald-600 mt-1">${activeAttendance.length} / ${agents.length}</h3>
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-                            <h3 class="text-lg font-bold text-white mb-4">📊 Team-wise Comparison & Performance</h3>
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">📊 Team-wise Comparison & Performance</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 ${teamComparison.map(t => `
-                                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl shadow">
+                                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl shadow-sm">
                                         <div class="flex justify-between items-center mb-1">
-                                            <h4 class="font-bold text-white">${t.teamName}</h4>
-                                            <span class="text-xs bg-orange-500/10 text-orange-400 border border-orange-500/20 px-2.5 py-0.5 rounded-full font-semibold">${t.agentsCount} Agents</span>
+                                            <h4 class="font-bold text-slate-900">${t.teamName}</h4>
+                                            <span class="text-xs bg-orange-100 text-orange-600 px-2.5 py-0.5 rounded-full font-semibold">${t.agentsCount} Agents</span>
                                         </div>
-                                        <p class="text-sm text-slate-400">Sales: <span class="font-bold text-orange-400">৳${t.totalSales.toLocaleString()}</span> / Target: ৳${t.totalTarget.toLocaleString()}</p>
+                                        <p class="text-sm text-slate-500">Sales: <span class="font-bold text-orange-600">৳${t.totalSales.toLocaleString()}</span> / Target: ৳${t.totalTarget.toLocaleString()}</p>
                                     </div>
                                 `).join('')}
                             </div>
@@ -248,25 +245,25 @@
                     </div>
 
                     <div class="${State.adminTab === 'agents' ? '' : 'hidden'} space-y-6">
-                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-                            <h3 class="text-lg font-bold text-white mb-4">Create New Agent Account</h3>
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">Create New Agent Account</h3>
                             <form id="createAgentForm" class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                                <input type="text" id="newName" placeholder="Agent Full Name" required class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
-                                <input type="text" id="newUsername" placeholder="Username (e.g. 11044)" required class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
-                                <input type="text" id="newPassword" placeholder="Password (e.g. 12345)" required class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
-                                <select id="newTeam" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                                <input type="text" id="newName" placeholder="Agent Full Name" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                <input type="text" id="newUsername" placeholder="Username (e.g. 11044)" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                <input type="text" id="newPassword" placeholder="Password (e.g. 12345)" required class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
+                                <select id="newTeam" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
                                     <option value="Team Nazim">Team Nazim</option>
                                     <option value="Team Abdus Samad">Team Abdus Samad</option>
                                 </select>
-                                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-xl transition shadow-lg shadow-orange-500/20 text-sm">Add Agent</button>
+                                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition shadow-sm text-sm">Add Agent</button>
                             </form>
                         </div>
 
-                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-                            <h3 class="text-lg font-bold text-white mb-4">Manage Agents, Status & Individual Targets (BDT)</h3>
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">Manage Agents, Status & Individual Targets (BDT)</h3>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-slate-300">
-                                    <thead class="bg-slate-950 text-slate-400 uppercase text-xs border-b border-slate-800">
+                                <table class="w-full text-left text-sm text-slate-700">
+                                    <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
                                         <tr>
                                             <th class="p-3">Name</th>
                                             <th class="p-3">Username</th>
@@ -277,28 +274,28 @@
                                             <th class="p-3">Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-slate-800">
-                                        ${allAgents.length === 0 ? `<tr><td colspan="7" class="p-4 text-center text-slate-500">No agents found.</td></tr>` : 
+                                    <tbody class="divide-y divide-slate-200">
+                                        ${allAgents.length === 0 ? `<tr><td colspan="7" class="p-4 text-center text-slate-400">No agents found.</td></tr>` : 
                                         allAgents.map(u => `
                                             <tr>
-                                                <td class="p-3 font-medium text-white">${u.name}</td>
-                                                <td class="p-3 text-slate-400 font-semibold">${u.username}</td>
-                                                <td class="p-3 text-slate-400">${u.password}</td>
-                                                <td class="p-3"><span class="bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg text-xs font-semibold">${u.team}</span></td>
+                                                <td class="p-3 font-medium text-slate-900">${u.name}</td>
+                                                <td class="p-3 text-slate-600 font-semibold">${u.username}</td>
+                                                <td class="p-3 text-slate-500">${u.password}</td>
+                                                <td class="p-3"><span class="bg-slate-100 text-slate-800 px-2 py-1 rounded text-xs font-semibold">${u.team}</span></td>
                                                 <td class="p-3">
-                                                    <button onclick="toggleAgentStatus(${u.id})" class="px-3 py-1 rounded-lg text-xs font-semibold transition ${u.active !== false ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20'}">
+                                                    <button onclick="toggleAgentStatus(${u.id})" class="px-3 py-1 rounded-lg text-xs font-semibold transition ${u.active !== false ? 'bg-emerald-100 text-emerald-700 border border-emerald-300 hover:bg-emerald-200' : 'bg-red-100 text-red-700 border border-red-300 hover:bg-red-200'}">
                                                         ${u.active !== false ? '🟢 Active' : '🔴 Inactive (Off)'}
                                                     </button>
                                                 </td>
                                                 <td class="p-3">
                                                     <div class="flex items-center gap-2">
-                                                        <input type="number" id="target_${u.username}" value="${State.targets[u.username] || 50000}" class="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 w-28 text-white text-sm focus:outline-none focus:border-orange-500">
-                                                        <button onclick="updateAgentTarget('${u.username}')" class="bg-orange-500 hover:bg-orange-600 text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold">Set</button>
+                                                        <input type="number" id="target_${u.username}" value="${State.targets[u.username] || 50000}" class="bg-slate-50 border border-slate-300 rounded px-2 py-1 w-28 text-slate-900 text-sm">
+                                                        <button onclick="updateAgentTarget('${u.username}')" class="bg-orange-500 hover:bg-orange-600 text-white px-2.5 py-1 rounded text-xs font-semibold">Set</button>
                                                     </div>
                                                 </td>
-                                                <td class="p-3 flex gap-3">
-                                                    <button onclick="editUserPrompt(${u.id})" class="text-blue-400 hover:text-blue-300 text-xs font-semibold">Edit</button>
-                                                    <button onclick="deleteUser(${u.id})" class="text-red-400 hover:text-red-300 text-xs font-semibold">Delete</button>
+                                                <td class="p-3 flex gap-2">
+                                                    <button onclick="editUserPrompt(${u.id})" class="text-blue-600 hover:text-blue-800 text-xs font-semibold">Edit</button>
+                                                    <button onclick="deleteUser(${u.id})" class="text-red-500 hover:text-red-700 text-xs font-semibold">Delete</button>
                                                 </td>
                                             </tr>
                                         `).join('')}
@@ -309,11 +306,11 @@
                     </div>
 
                     <div class="${State.adminTab === 'attendance' ? '' : 'hidden'} space-y-6">
-                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-                            <h3 class="text-lg font-bold text-white mb-4">⏱️ Live Agent Attendance & Break Logs</h3>
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">⏱️ Live Agent Attendance & Break Logs</h3>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-slate-300">
-                                    <thead class="bg-slate-950 text-slate-400 uppercase text-xs border-b border-slate-800">
+                                <table class="w-full text-left text-sm text-slate-700">
+                                    <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
                                         <tr>
                                             <th class="p-3">Agent Name</th>
                                             <th class="p-3">Team</th>
@@ -323,21 +320,21 @@
                                             <th class="p-3">Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-slate-800">
-                                        ${State.attendance.length === 0 ? `<tr><td colspan="6" class="p-4 text-center text-slate-500">No attendance logs found.</td></tr>` :
+                                    <tbody class="divide-y divide-slate-200">
+                                        ${State.attendance.length === 0 ? `<tr><td colspan="6" class="p-4 text-center text-slate-400">No attendance logs found.</td></tr>` :
                                         State.attendance.map((att, idx) => `
                                             <tr>
-                                                <td class="p-3 font-medium text-white">${att.name} (${att.username})</td>
-                                                <td class="p-3 text-slate-400">${att.team}</td>
-                                                <td class="p-3 text-slate-400">${att.loginTime}</td>
+                                                <td class="p-3 font-medium text-slate-900">${att.name} (${att.username})</td>
+                                                <td class="p-3 text-slate-600">${att.team}</td>
+                                                <td class="p-3 text-slate-500">${att.loginTime}</td>
                                                 <td class="p-3">
-                                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${att.logoutTime ? 'bg-slate-800 text-slate-400' : (att.onBreak ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20')}">
+                                                    <span class="px-2 py-1 rounded-full text-xs font-semibold ${att.logoutTime ? 'bg-slate-100 text-slate-600' : (att.onBreak ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700')}">
                                                         ${att.logoutTime ? 'Offline' : (att.onBreak ? `On Break (${att.breakReason})` : 'Active Duty')}
                                                     </span>
                                                 </td>
-                                                <td class="p-3 text-slate-400">${att.breakReason || 'None'}</td>
+                                                <td class="p-3 text-slate-500">${att.breakReason || 'None'}</td>
                                                 <td class="p-3">
-                                                    <button onclick="adminForceLogout(${idx})" class="text-red-400 hover:text-red-300 text-xs font-semibold bg-red-500/10 px-2.5 py-1 rounded border border-red-500/20">Force Close Shift</button>
+                                                    <button onclick="adminForceLogout(${idx})" class="text-red-500 hover:text-red-700 text-xs font-semibold bg-red-50 px-2 py-1 rounded border border-red-200">Force Close Shift</button>
                                                 </td>
                                             </tr>
                                         `).join('')}
@@ -348,41 +345,41 @@
                     </div>
 
                     <div class="${State.adminTab === 'reports' ? '' : 'hidden'} space-y-6">
-                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-                            <h3 class="text-lg font-bold text-white mb-4">📝 Manual Report Entry (Admin Override)</h3>
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">📝 Manual Report Entry (Admin Override)</h3>
                             <form id="adminReportForm" class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
                                 <div>
-                                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Select Agent</label>
-                                    <select id="adminAgentUsername" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                                    <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Select Agent</label>
+                                    <select id="adminAgentUsername" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
                                         <option value="">Choose Agent</option>
                                         ${agents.map(a => `<option value="${a.username}">${a.name} (${a.username})</option>`).join('')}
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Date</label>
-                                    <input type="date" id="adminReportDate" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                                    <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Date</label>
+                                    <input type="date" id="adminReportDate" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Leads</label>
-                                    <input type="number" id="adminLeads" placeholder="Leads" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                                    <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Leads</label>
+                                    <input type="number" id="adminLeads" placeholder="Leads" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Orders</label>
-                                    <input type="number" id="adminOrders" placeholder="Orders" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                                    <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Orders</label>
+                                    <input type="number" id="adminOrders" placeholder="Orders" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Amount (BDT)</label>
-                                    <input type="number" id="adminAmount" placeholder="Amount" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                                    <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Amount (BDT)</label>
+                                    <input type="number" id="adminAmount" placeholder="Amount" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-sm">
                                 </div>
-                                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-xl transition shadow-lg shadow-orange-500/20 text-sm">Add Report</button>
+                                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition shadow-sm text-sm">Add Report</button>
                             </form>
                         </div>
 
-                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-                            <h3 class="text-lg font-bold text-white mb-4">All Submitted Reports</h3>
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">All Submitted Reports</h3>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-slate-300">
-                                    <thead class="bg-slate-950 text-slate-400 uppercase text-xs border-b border-slate-800">
+                                <table class="w-full text-left text-sm text-slate-700">
+                                    <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
                                         <tr>
                                             <th class="p-3">Date</th>
                                             <th class="p-3">Agent Name</th>
@@ -393,18 +390,18 @@
                                             <th class="p-3">Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-slate-800">
-                                        ${State.reports.length === 0 ? `<tr><td colspan="7" class="p-4 text-center text-slate-500">No reports submitted yet.</td></tr>` :
+                                    <tbody class="divide-y divide-slate-200">
+                                        ${State.reports.length === 0 ? `<tr><td colspan="7" class="p-4 text-center text-slate-400">No reports submitted yet.</td></tr>` :
                                         State.reports.map((r, idx) => `
                                             <tr>
                                                 <td class="p-3">${r.date}</td>
-                                                <td class="p-3 font-medium text-white">${r.name}</td>
-                                                <td class="p-3 text-slate-400">${r.team}</td>
+                                                <td class="p-3 font-medium text-slate-900">${r.name}</td>
+                                                <td class="p-3 text-slate-500">${r.team}</td>
                                                 <td class="p-3">${r.leads}</td>
                                                 <td class="p-3">${r.orders}</td>
-                                                <td class="p-3 font-semibold text-orange-400">৳${(r.amount || 0).toLocaleString()}</td>
+                                                <td class="p-3 font-semibold text-orange-600">৳${(r.amount || 0).toLocaleString()}</td>
                                                 <td class="p-3">
-                                                    <button onclick="deleteReport(${idx})" class="text-red-400 hover:text-red-300 text-xs font-semibold">Delete</button>
+                                                    <button onclick="deleteReport(${idx})" class="text-red-500 hover:text-red-700 text-xs font-semibold">Delete</button>
                                                 </td>
                                             </tr>
                                         `).join('')}
@@ -415,11 +412,11 @@
                     </div>
 
                     <div class="${State.adminTab === 'leaderboard' ? '' : 'hidden'} space-y-6">
-                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-                            <h3 class="text-lg font-bold text-white mb-4">🏆 Agent Leaderboard & Rankings</h3>
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">🏆 Agent Leaderboard & Rankings</h3>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-slate-300">
-                                    <thead class="bg-slate-950 text-slate-400 uppercase text-xs border-b border-slate-800">
+                                <table class="w-full text-left text-sm text-slate-700">
+                                    <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
                                         <tr>
                                             <th class="p-3">Rank</th>
                                             <th class="p-3">Name</th>
@@ -428,18 +425,18 @@
                                             <th class="p-3">Achievement Ratio</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-slate-800">
+                                    <tbody class="divide-y divide-slate-200">
                                         ${agentStats.map((item, idx) => `
                                             <tr>
-                                                <td class="p-3 font-bold text-base text-white">${idx === 0 ? '🥇 1st' : idx === 1 ? '🥈 2nd' : idx === 2 ? '🥉 3rd' : `#${idx+1}`}</td>
-                                                <td class="p-3 font-medium text-white">${item.name}</td>
-                                                <td class="p-3 text-slate-400">${item.team}</td>
-                                                <td class="p-3 text-orange-400 font-bold">৳${item.salesAmount.toLocaleString()} / ৳${item.target.toLocaleString()}</td>
+                                                <td class="p-3 font-bold text-base text-slate-900">${idx === 0 ? '🥇 1st' : idx === 1 ? '🥈 2nd' : idx === 2 ? '🥉 3rd' : `#${idx+1}`}</td>
+                                                <td class="p-3 font-medium text-slate-900">${item.name}</td>
+                                                <td class="p-3 text-slate-500">${item.team}</td>
+                                                <td class="p-3 text-orange-600 font-bold">৳${item.salesAmount.toLocaleString()} / ৳${item.target.toLocaleString()}</td>
                                                 <td class="p-3 w-48">
-                                                    <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
-                                                        <div class="bg-gradient-to-r from-orange-500 to-amber-500 h-2.5 rounded-full" style="width: ${item.ratio}%"></div>
+                                                    <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+                                                        <div class="bg-orange-500 h-2.5 rounded-full" style="width: ${item.ratio}%"></div>
                                                     </div>
-                                                    <span class="text-xs text-slate-400 mt-1 block">${item.ratio}% achieved</span>
+                                                    <span class="text-xs text-slate-500 mt-1 block">${item.ratio}% achieved</span>
                                                 </td>
                                             </tr>
                                         `).join('')}
@@ -637,116 +634,116 @@
             const teamComparison = Object.values(teamsMap).sort((a, b) => b.totalSales - a.totalSales);
 
             return `
-                <nav class="bg-slate-900 border-b border-slate-800 text-white px-6 py-3.5 flex justify-between items-center shadow-lg">
+                <nav class="bg-slate-900 text-white px-6 py-3.5 flex justify-between items-center shadow">
                     <div class="flex items-center gap-3">
-                        <div class="bg-gradient-to-tr from-orange-600 to-amber-500 text-white px-3 py-1.5 rounded-xl font-bold text-sm tracking-wider shadow">
+                        <div class="bg-orange-500 text-white px-3 py-1.5 rounded-lg font-bold text-sm tracking-wider">
                             GHORER BAZAR
                         </div>
-                        <span class="text-xs text-orange-400 font-medium">Agent Portal</span>
+                        <span class="text-xs text-slate-400">Agent Portal</span>
                     </div>
-                    <button onclick="logout()" class="bg-red-500/10 hover:bg-red-600 text-red-400 hover:text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold transition border border-red-500/20">Logout & End Shift</button>
+                    <button onclick="logout()" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold transition">Logout & End Shift</button>
                 </nav>
 
-                <div class="bg-slate-900/50 border-b border-slate-800 px-6 flex gap-2 overflow-x-auto">
-                    <button onclick="setAgentTab('overview')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.agentTab === 'overview' ? 'border-orange-500 text-orange-400 bg-slate-800/40' : 'border-transparent text-slate-400 hover:text-white'}">📈 Month Overview & Submit</button>
-                    <button onclick="setAgentTab('attendance')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.agentTab === 'attendance' ? 'border-orange-500 text-orange-400 bg-slate-800/40' : 'border-transparent text-slate-400 hover:text-white'}">⏱️ Shift & Break Portal</button>
-                    <button onclick="setAgentTab('leaderboard')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.agentTab === 'leaderboard' ? 'border-orange-500 text-orange-400 bg-slate-800/40' : 'border-transparent text-slate-400 hover:text-white'}">🏆 Team Leaderboard</button>
+                <div class="bg-white border-b border-slate-200 px-6 flex gap-2 overflow-x-auto shadow-sm">
+                    <button onclick="setAgentTab('overview')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.agentTab === 'overview' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">📈 Month Overview & Submit</button>
+                    <button onclick="setAgentTab('attendance')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.agentTab === 'attendance' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">⏱️ Shift & Break Portal</button>
+                    <button onclick="setAgentTab('leaderboard')" class="py-3 px-5 font-semibold text-sm border-b-2 transition ${State.agentTab === 'leaderboard' ? 'border-orange-500 text-orange-600' : 'border-transparent text-slate-600 hover:text-slate-900'}">🏆 Team Leaderboard</button>
                 </div>
 
-                <div class="flex-grow p-6 max-w-5xl mx-auto w-full space-y-6 bg-slate-950">
+                <div class="flex-grow p-6 max-w-5xl mx-auto w-full space-y-6 bg-slate-100">
                     
                     <div class="${State.agentTab === 'overview' ? '' : 'hidden'} space-y-6">
-                        <div class="bg-gradient-to-r from-slate-900 to-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex justify-between items-center">
+                        <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-md flex justify-between items-center">
                             <div>
-                                <h2 class="text-xl font-bold text-white">Welcome, ${State.currentUser.name}!</h2>
+                                <h2 class="text-xl font-bold">Welcome, ${State.currentUser.name}!</h2>
                                 <p class="text-xs text-slate-400 mt-1">Team: ${State.currentUser.team}</p>
                             </div>
-                            <div class="bg-slate-950 px-4 py-2 rounded-xl text-xs text-orange-400 border border-slate-800 font-semibold">
+                            <div class="bg-slate-800 px-4 py-2 rounded-xl text-xs text-orange-400 border border-slate-700 font-semibold">
                                 📅 Month Performance Overview
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg border-l-4 border-l-slate-700">
-                                <p class="text-slate-400 text-xs uppercase font-semibold">Your Month Target Amount</p>
-                                <h3 class="text-3xl font-bold text-white mt-1">৳${myTarget.toLocaleString()}</h3>
+                            <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm border-l-4 border-l-slate-700">
+                                <p class="text-slate-500 text-xs uppercase font-semibold">Your Month Target Amount</p>
+                                <h3 class="text-3xl font-bold text-slate-900 mt-1">৳${myTarget.toLocaleString()}</h3>
                             </div>
-                            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-lg border-l-4 border-l-orange-500">
-                                <p class="text-slate-400 text-xs uppercase font-semibold">Total Month Sales Achieved</p>
-                                <h3 class="text-3xl font-bold text-orange-400 mt-1">৳${totalSales.toLocaleString()} (${achievementRate}%)</h3>
+                            <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm border-l-4 border-l-orange-500">
+                                <p class="text-slate-500 text-xs uppercase font-semibold">Total Month Sales Achieved</p>
+                                <h3 class="text-3xl font-bold text-orange-600 mt-1">৳${totalSales.toLocaleString()} (${achievementRate}%)</h3>
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-                            <h3 class="text-lg font-bold text-white mb-4">Submit Daily Sales Report</h3>
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">Submit Daily Sales Report</h3>
                             <form id="reportForm" class="space-y-4">
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
-                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Total Leads</label>
-                                        <input type="number" id="leads" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Total Leads</label>
+                                        <input type="number" id="leads" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2 text-slate-900 text-sm focus:outline-none focus:border-orange-500">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Total Orders</label>
-                                        <input type="number" id="orders" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-orange-500">
+                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Total Orders</label>
+                                        <input type="number" id="orders" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2 text-slate-900 text-sm focus:outline-none focus:border-orange-500">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Sales Amount (BDT)</label>
-                                        <input type="number" id="amount" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-orange-500" placeholder="e.g. 5000">
+                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Sales Amount (BDT)</label>
+                                        <input type="number" id="amount" required class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2 text-slate-900 text-sm focus:outline-none focus:border-orange-500" placeholder="e.g. 5000">
                                     </div>
                                 </div>
-                                <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold py-2.5 rounded-xl transition shadow-lg shadow-orange-500/20 text-sm">Submit Report & Complete</button>
+                                <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 rounded-lg transition shadow-md text-sm">Submit Report & Complete</button>
                             </form>
                         </div>
                     </div>
 
                     <div class="${State.agentTab === 'attendance' ? '' : 'hidden'} space-y-6">
-                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center space-y-6 shadow-xl">
-                            <h3 class="text-xl font-bold text-white">Shift & Smart Break Portal</h3>
-                            <p class="text-xs text-slate-400">Status: <span class="font-semibold ${activeAttendance ? (activeAttendance.onBreak ? 'text-amber-400' : 'text-emerald-400') : 'text-slate-500'}">${activeAttendance ? (activeAttendance.onBreak ? `On Break (${activeAttendance.breakReason})` : 'Active Duty') : 'Offline'}</span></p>
+                        <div class="bg-white border border-slate-200 rounded-xl p-8 text-center space-y-6 shadow-sm">
+                            <h3 class="text-xl font-bold text-slate-900">Shift & Smart Break Portal</h3>
+                            <p class="text-xs text-slate-500">Status: <span class="font-semibold ${activeAttendance ? (activeAttendance.onBreak ? 'text-amber-600' : 'text-emerald-600') : 'text-slate-400'}">${activeAttendance ? (activeAttendance.onBreak ? `On Break (${activeAttendance.breakReason})` : 'Active Duty') : 'Offline'}</span></p>
                             
                             ${activeAttendance && !activeAttendance.onBreak ? `
-                                <div class="max-w-md mx-auto bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-4">
-                                    <label class="block text-xs font-semibold uppercase text-slate-400 text-left">Select Break Reason</label>
-                                    <select id="breakReasonSelect" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-orange-500">
+                                <div class="max-w-md mx-auto bg-slate-50 p-6 rounded-xl border border-slate-200 space-y-4">
+                                    <label class="block text-xs font-semibold uppercase text-slate-600 text-left">Select Break Reason</label>
+                                    <select id="breakReasonSelect" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:border-orange-500">
                                         <option value="Lunch Break">Lunch Break</option>
                                         <option value="Prayer Break">Prayer Break</option>
                                         <option value="Personal Break">Personal Break</option>
                                         <option value="Washroom">Washroom</option>
                                     </select>
-                                    <button onclick="takeBreak()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl shadow transition text-sm">Take Break</button>
+                                    <button onclick="takeBreak()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-lg shadow transition text-sm">Take Break</button>
                                 </div>
                             ` : ''}
 
                             ${activeAttendance && activeAttendance.onBreak ? `
-                                <div class="max-w-md mx-auto bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-4">
-                                    <p class="text-amber-400 font-medium text-sm">You are currently on break: <span class="underline">${activeAttendance.breakReason}</span></p>
-                                    <button onclick="resumeWork()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow transition text-sm">Resume Work / Start Shift</button>
+                                <div class="max-w-md mx-auto bg-slate-50 p-6 rounded-xl border border-slate-200 space-y-4">
+                                    <p class="text-amber-600 font-medium text-sm">You are currently on break: <span class="underline">${activeAttendance.breakReason}</span></p>
+                                    <button onclick="resumeWork()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg shadow transition text-sm">Resume Work / Start Shift</button>
                                 </div>
                             ` : ''}
                         </div>
                     </div>
 
                     <div class="${State.agentTab === 'leaderboard' ? '' : 'hidden'} space-y-6">
-                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-                            <h3 class="text-lg font-bold text-white mb-4">📊 Team-wise Comparison</h3>
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">📊 Team-wise Comparison</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 ${teamComparison.map(t => `
-                                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl shadow">
+                                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl shadow-sm">
                                         <div class="flex justify-between items-center mb-2">
-                                            <h4 class="font-bold text-white">${t.teamName}</h4>
-                                            <span class="text-xs bg-orange-500/10 text-orange-400 border border-orange-500/20 px-2.5 py-0.5 rounded-full font-semibold">${t.agentsCount} Agents</span>
+                                            <h4 class="font-bold text-slate-900">${t.teamName}</h4>
+                                            <span class="text-xs bg-orange-100 text-orange-600 px-2.5 py-0.5 rounded-full font-semibold">${t.agentsCount} Agents</span>
                                         </div>
-                                        <p class="text-sm text-slate-400">Sales: <span class="font-bold text-orange-400">৳${t.totalSales.toLocaleString()}</span> / Target: ৳${t.totalTarget.toLocaleString()}</p>
+                                        <p class="text-sm text-slate-500">Sales: <span class="font-bold text-orange-600">৳${t.totalSales.toLocaleString()}</span> / Target: ৳${t.totalTarget.toLocaleString()}</p>
                                     </div>
                                 `).join('')}
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-                            <h3 class="text-lg font-bold text-white mb-4">🏆 Agent Leaderboard & Ranking</h3>
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">🏆 Agent Leaderboard & Ranking</h3>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-left text-sm text-slate-300">
-                                    <thead class="bg-slate-950 text-slate-400 uppercase text-xs border-b border-slate-800">
+                                <table class="w-full text-left text-sm text-slate-700">
+                                    <thead class="bg-slate-100 text-slate-700 uppercase text-xs">
                                         <tr>
                                             <th class="p-3">Rank</th>
                                             <th class="p-3">Agent Name</th>
@@ -755,18 +752,18 @@
                                             <th class="p-3">Achievement Ratio</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-slate-800">
+                                    <tbody class="divide-y divide-slate-200">
                                         ${leaderboard.map((item, idx) => `
-                                            <tr class="${item.username === State.currentUser.username ? 'bg-orange-500/10 font-semibold' : ''}">
-                                                <td class="p-3 text-white">${idx === 0 ? '🥇 1st' : idx === 1 ? '🥈 2nd' : idx === 2 ? '🥉 3rd' : `#${idx + 1}`}</td>
-                                                <td class="p-3 text-white">${item.name} ${item.username === State.currentUser.username ? '<span class="text-xs bg-orange-500 text-white px-2 py-0.5 rounded ml-1">You</span>' : ''}</td>
-                                                <td class="p-3 text-slate-400">${item.team}</td>
-                                                <td class="p-3 text-orange-400 font-bold">৳${item.salesAmount.toLocaleString()} / ৳${item.target.toLocaleString()}</td>
+                                            <tr class="${item.username === State.currentUser.username ? 'bg-orange-50 font-semibold' : ''}">
+                                                <td class="p-3 text-slate-900">${idx === 0 ? '🥇 1st' : idx === 1 ? '🥈 2nd' : idx === 2 ? '🥉 3rd' : `#${idx + 1}`}</td>
+                                                <td class="p-3 text-slate-900">${item.name} ${item.username === State.currentUser.username ? '<span class="text-xs bg-orange-500 text-white px-2 py-0.5 rounded ml-1">You</span>' : ''}</td>
+                                                <td class="p-3 text-slate-500">${item.team}</td>
+                                                <td class="p-3 text-orange-600 font-bold">৳${item.salesAmount.toLocaleString()} / ৳${item.target.toLocaleString()}</td>
                                                 <td class="p-3 w-48">
-                                                    <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
-                                                        <div class="bg-gradient-to-r from-orange-500 to-amber-500 h-2.5 rounded-full" style="width: ${item.ratio}%"></div>
+                                                    <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+                                                        <div class="bg-orange-500 h-2.5 rounded-full" style="width: ${item.ratio}%"></div>
                                                     </div>
-                                                    <span class="text-xs text-slate-400 mt-1 block">${item.ratio}% achieved</span>
+                                                    <span class="text-xs text-slate-500 mt-1 block">${item.ratio}% achieved</span>
                                                 </td>
                                             </tr>
                                         `).join('')}
