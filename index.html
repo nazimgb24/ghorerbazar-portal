@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GhorerBazar Futuristic Sales Portal</title>
+    <title>GhorerBazar Sales Performance Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-orange-500 selection:text-white">
@@ -16,11 +15,22 @@
     <div id="app" class="flex-grow flex flex-col"></div>
 
     <script>
+        // Ensure default admin always exists while preserving local users and reports
+        let savedUsers = JSON.parse(localStorage.getItem('gb_users'));
+        if (!savedUsers || !Array.isArray(savedUsers) || savedUsers.length === 0) {
+            savedUsers = [
+                { id: 1, name: 'Admin User', username: 'admin', password: 'admin123', role: 'admin', team: 'Management' }
+            ];
+        } else {
+            // Ensure admin account is always present
+            if (!savedUsers.some(u => u.username === 'admin')) {
+                savedUsers.unshift({ id: 1, name: 'Admin User', username: 'admin', password: 'admin123', role: 'admin', team: 'Management' });
+            }
+        }
+
         const State = {
             currentUser: JSON.parse(localStorage.getItem('gb_current_user')) || null,
-            users: JSON.parse(localStorage.getItem('gb_users')) || [
-                { id: 1, name: 'Admin User', username: 'admin', password: 'admin123', role: 'admin', team: 'Management' }
-            ],
+            users: savedUsers,
             attendance: JSON.parse(localStorage.getItem('gb_attendance')) || [],
             reports: JSON.parse(localStorage.getItem('gb_reports')) || [],
             targets: JSON.parse(localStorage.getItem('gb_targets')) || {},
@@ -63,7 +73,7 @@
                                 GB
                             </div>
                             <h1 class="text-2xl font-bold text-white">GhorerBazar</h1>
-                            <p class="text-xs text-orange-400 mt-1 uppercase tracking-widest font-medium">Futuristic Sales Portal</p>
+                            <p class="text-xs text-orange-400 mt-1 uppercase tracking-widest font-medium">Sales Performance Portal</p>
                         </div>
                         <form id="loginForm" class="space-y-5 relative z-10">
                             <div>
@@ -89,10 +99,11 @@
                 e.preventDefault();
                 const u = document.getElementById('username').value.trim();
                 const p = document.getElementById('password').value.trim();
+                
                 const found = State.users.find(x => String(x.username).trim() === u && String(x.password).trim() === p);
+                
                 if (found) {
                     State.currentUser = found;
-                    // Auto-start attendance shift if agent logs in and hasn't started yet
                     if (found.role === 'agent') {
                         const active = State.attendance.find(a => a.username === found.username && !a.logoutTime);
                         if (!active) {
@@ -103,8 +114,7 @@
                                 loginTime: new Date().toLocaleTimeString(),
                                 logoutTime: null,
                                 onBreak: false,
-                                breakReason: '',
-                                totalBreakMinutes: 0
+                                breakReason: ''
                             });
                         }
                     }
@@ -160,7 +170,7 @@
                         <div class="bg-gradient-to-tr from-orange-600 to-amber-500 text-white px-3 py-1.5 rounded-xl font-bold text-sm tracking-wider shadow">
                             GHORER BAZAR
                         </div>
-                        <span class="text-xs text-orange-400 font-medium tracking-wide">Admin Control Center</span>
+                        <span class="text-xs text-orange-400 font-medium">Admin Control Center</span>
                     </div>
                     <div class="flex items-center gap-3">
                         <button onclick="exportData()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-slate-700 transition">📥 Backup</button>
@@ -181,12 +191,11 @@
 
                 <div class="flex-grow p-6 max-w-7xl mx-auto w-full space-y-6 bg-slate-950">
                     
-                    <!-- TAB 1: OVERVIEW -->
                     <div class="${State.adminTab === 'overview' ? '' : 'hidden'} space-y-6">
                         <div class="bg-gradient-to-r from-slate-900 to-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col md:flex-row justify-between items-center gap-4">
                             <div>
                                 <h2 class="text-xl font-bold text-white">Welcome, ${State.currentUser.name}!</h2>
-                                <p class="text-xs text-slate-400 mt-1">Futuristic real-time performance analytics.</p>
+                                <p class="text-xs text-slate-400 mt-1">Real-time performance analytics.</p>
                             </div>
                             <div class="flex items-center gap-2 bg-slate-950 p-1.5 rounded-xl border border-slate-800">
                                 <button onclick="setAdminViewMode('month')" class="px-4 py-1.5 text-xs font-semibold rounded-lg transition ${State.adminViewMode === 'month' ? 'bg-orange-500 text-white shadow' : 'text-slate-400 hover:text-white'}">Month-wise</button>
@@ -229,7 +238,6 @@
                         </div>
                     </div>
 
-                    <!-- TAB 2: AGENT MANAGEMENT -->
                     <div class="${State.adminTab === 'agents' ? '' : 'hidden'} space-y-6">
                         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
                             <h3 class="text-lg font-bold text-white mb-4">Create New Agent Account</h3>
@@ -285,10 +293,9 @@
                         </div>
                     </div>
 
-                    <!-- TAB 3: ATTENDANCE & BREAKS (Admin View with 100% editable control) -->
                     <div class="${State.adminTab === 'attendance' ? '' : 'hidden'} space-y-6">
                         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-                            <h3 class="text-lg font-bold text-white mb-4">⏱️ Live Agent Attendance & Break Logs (Admin Override)</h3>
+                            <h3 class="text-lg font-bold text-white mb-4">⏱️ Live Agent Attendance & Break Logs</h3>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm text-slate-300">
                                     <thead class="bg-slate-950 text-slate-400 uppercase text-xs border-b border-slate-800">
@@ -325,7 +332,6 @@
                         </div>
                     </div>
 
-                    <!-- TAB 4: MANUAL REPORT ENTRY -->
                     <div class="${State.adminTab === 'reports' ? '' : 'hidden'} space-y-6">
                         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
                             <h3 class="text-lg font-bold text-white mb-4">📝 Manual Report Entry (Admin Override)</h3>
@@ -393,7 +399,6 @@
                         </div>
                     </div>
 
-                    <!-- TAB 5: LEADERBOARD -->
                     <div class="${State.adminTab === 'leaderboard' ? '' : 'hidden'} space-y-6">
                         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
                             <h3 class="text-lg font-bold text-white mb-4">🏆 Agent Leaderboard & Rankings</h3>
@@ -626,7 +631,6 @@
 
                 <div class="flex-grow p-6 max-w-5xl mx-auto w-full space-y-6 bg-slate-950">
                     
-                    <!-- AGENT TAB 1: OVERVIEW & SUBMIT -->
                     <div class="${State.agentTab === 'overview' ? '' : 'hidden'} space-y-6">
                         <div class="bg-gradient-to-r from-slate-900 to-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex justify-between items-center">
                             <div>
@@ -671,7 +675,6 @@
                         </div>
                     </div>
 
-                    <!-- AGENT TAB 2: ATTENDANCE & BREAKS -->
                     <div class="${State.agentTab === 'attendance' ? '' : 'hidden'} space-y-6">
                         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center space-y-6 shadow-xl">
                             <h3 class="text-xl font-bold text-white">Shift & Smart Break Portal</h3>
@@ -699,7 +702,6 @@
                         </div>
                     </div>
 
-                    <!-- AGENT TAB 3: LEADERBOARD -->
                     <div class="${State.agentTab === 'leaderboard' ? '' : 'hidden'} space-y-6">
                         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
                             <h3 class="text-lg font-bold text-white mb-4">📊 Team-wise Comparison</h3>
@@ -760,7 +762,8 @@
         }
 
         window.takeBreak = function() {
-            const reason = document.getElementById('breakReasonSelect').value;
+            const selectEl = document.getElementById('breakReasonSelect');
+            const reason = selectEl ? selectEl.value : 'Personal Break';
             const att = State.attendance.find(a => a.username === State.currentUser.username && !a.logoutTime);
             if (att) {
                 att.onBreak = true;
